@@ -26,12 +26,12 @@ public class MainActivity extends AppCompatActivity {
         // db.showAllTables();
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
-        //db.deleteTable("LeitnerSystem");
-        // db.deleteTable("SuperMemo");
-      //  db.getAvaliableCards("LeitnerSystem");
-// Inserting Shop/Rows
-        Log.d("Insert: ", "Inserting ..");
+        db.deleteTable("LeitnerSystem");
+        db.deleteTable("SuperMemo");
+        //  db.getAvaliableCards("LeitnerSystem");
         databaseStatus(db);
+        displaySuperMemoWords(db);
+        displayLeitnerSystemWords(db);
 
 
         //String wordCount = Integer.toString(db.getAvaliableCards("LeitnerSystem"));
@@ -42,33 +42,7 @@ public class MainActivity extends AppCompatActivity {
         ////db.dropTable("LeitnerSystem");
         //db.dropTable("SuperMemo");
         // Reading all shops
-        /*
-        Log.d("Reading: ", "Reading all shops..");
-        List<Flashcard> shops = db.getAllFlashcards("LeitnerSystem");
 
-        for (
-                Flashcard flashcard
-                : shops)
-
-        {
-            String log = "Id: " + flashcard.getId() + " ,Word: " + flashcard.getWord() + " ,Interval: " + flashcard.getInterval();
-// Writing shops to log
-            Log.d("Flashcard: : ", log);
-            flashcard.getDate();
-        }
-
-        List<Flashcard> shops2 = db.getAllFlashcards("SuperMemo");
-
-        for (
-                Flashcard flashcard
-                : shops2)
-
-        {
-            String log = "Id: " + flashcard.getId() + " ,Word: " + flashcard.getWord() + " ,Interval: " + flashcard.getInterval();
-// Writing shops to log
-            Log.d("Flashcard: : ", log);
-        }
-        */
 
     }
 
@@ -84,16 +58,46 @@ public class MainActivity extends AppCompatActivity {
         Flashcard flashcard = new Flashcard();
         if (db.checkDatabase("LeitnerSystem")) {
             Log.d("Empty database: ", "Adding data ..");
-            db.addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), 0, 1), "LeitnerSystem");
-            db.addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, flashcard.getCurrentDate(), 0, 1), "LeitnerSystem");
+            db.addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), "0", 1), "LeitnerSystem");
+            db.addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, flashcard.getCurrentDate(), "0", 1), "LeitnerSystem");
         } else {
             Log.d("Full LeitnerSystem:", "Enough data is already stored ..");
         }
         if (db.checkDatabase("SuperMemo")) {
-            db.addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), 0, 2.5f, 0), "SuperMemo");
-            db.addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, flashcard.getCurrentDate(), 0, 2.5f, 0), "SuperMemo");
+            db.addFlashcard(new SuperMemo(0, "Kore3", "This", 3, null, flashcard.getCurrentDate(), "0", 2.5f, 0), "SuperMemo");
+            db.addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, flashcard.getCurrentDate(), "0", 2.5f, 0), "SuperMemo");
         } else {
             Log.d("Full SuperMemo: ", "Enough data is already stored ..");
         }
+    }
+
+    public void displaySuperMemoWords(DBHandler db) {
+        Log.d("SuperMemo: ", "Display SuperMemo cards..");
+        List<SuperMemo> rows = db.getSuperMemoFlashcards();
+        for (SuperMemo flashcard : rows) {
+            String log = "Id: " + flashcard.getId()
+                    + " ,Word: " + flashcard.getWord()
+                    + " ,Interval: " + flashcard.getInterval()
+                    + " ,eFactor: " + flashcard.getEFactor()
+                    + " ,Date added: " + flashcard.getDateAdded();
+            Log.d("SuperMemo cards: ", log);
+        }
+    }
+
+    public void displayLeitnerSystemWords(DBHandler db) {
+        Log.d("Leitner: ", "Display Leitner cards..");
+        List<LeitnerSystem> rows = db.getLeitnerFlashcards();
+        for (LeitnerSystem flashcard : rows) {
+            String log = "Id: " + flashcard.getId()
+                    + " ,Word: " + flashcard.getWord()
+                    + " ,Interval: " + flashcard.getInterval()
+                    + " ,Box Number: " + flashcard.getBoxNumnber()
+                    + " ,Date added: " + flashcard.getDateAdded();
+            Log.d("Leitner cards: ", log);
+        }
+    }
+
+    public void displayLeitnerSystemWords() {
+
     }
 }

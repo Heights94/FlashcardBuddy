@@ -43,7 +43,7 @@ public class DBHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
+       // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
         dbHandler = new DBHandler(getTargetContext());
     }
 
@@ -52,13 +52,14 @@ public class DBHandlerTest {
         dbHandler.close();
     }
 
-
+    /* Returns false if the database isn't empty. */
     @Test
     public void databaseIsEmpty(){
+       // dbHandler.deleteTable("SuperMemo");
         boolean leitnerTableEmpty = dbHandler.checkDatabase("LeitnerSystem");
         boolean SuperMemoEmpty = dbHandler.checkDatabase("SuperMemo");
-        assertEquals(true,leitnerTableEmpty);
-        assertEquals(true,SuperMemoEmpty);
+        assertEquals(false,leitnerTableEmpty);
+        assertEquals(false,SuperMemoEmpty);
     }
 
     /* Checks if 2 words are stored for review. */
@@ -75,7 +76,33 @@ public class DBHandlerTest {
         assertEquals(2,number);
     }
 
+    /* Checks if words can be added to the SuperMemo table. */
     @Test
+    public void addSuperMemoWord(){
+        Flashcard flashcard = new Flashcard();
+        String dateAdded = flashcard.getCurrentDate();
+        SuperMemo sm = new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), "0", 2.5f, 0);
+        dbHandler.addFlashcard(sm, "SuperMemo");
+        System.out.println("EF value is " + sm.getEFactor());
+        System.out.println("Current date is: " + sm.getDateAdded());
+        assertEquals(sm.getEFactor(),2.5f,0.0);//eFactor has to be 2.5 exactly.
+        assertEquals(dateAdded,sm.getDateAdded());//Checks if dates matches
+    }
+
+     @Test
+    public void addLeitnerWord(){
+        Flashcard flashcard = new Flashcard();
+        String dateAdded = flashcard.getCurrentDate();
+        LeitnerSystem ls = new LeitnerSystem(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), "0", 1);
+        dbHandler.addFlashcard(ls, "LeitnerSystem");
+        System.out.println("Box number is " + ls.getBoxNumnber());
+        System.out.println("Current date is: " + ls.getDateAdded());
+        assertEquals(ls.getBoxNumnber(),1);//Box number has to start at 1.
+        assertEquals(dateAdded,ls.getDateAdded());//Checks if dates matches
+    }
+
+
+    // @Test
     public void wordsAvaliableForReview(){
         onView(withId(R.id.textView)).check(matches(withText("Hello, World!")));
     }

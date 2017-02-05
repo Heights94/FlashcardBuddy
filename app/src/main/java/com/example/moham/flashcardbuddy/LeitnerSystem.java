@@ -7,14 +7,26 @@ public class LeitnerSystem extends Flashcard {
 
     private String wordTranslated;
     private int boxNumnber;
-    public LeitnerSystem(int id, String word, String wordTranslated, int interval, String spelling, int dateAdded, int reviewDate, int boxNumber){
-        this.id=id;
-        this.word=word;
+
+    public void setBoxNumnber(int boxNumnber) {
+        this.boxNumnber = boxNumnber;
+    }
+
+    public int getBoxNumnber() {
+        return boxNumnber;
+    }
+
+    public LeitnerSystem(){
+
+    }
+    public LeitnerSystem(int id, String word, String wordTranslated, int interval, String spelling, String dateAdded, String reviewDate, int boxNumber) {
+        this.id = id;
+        this.word = word;
         this.wordTranslated = wordTranslated;
-        this.interval=interval;
-        this.spelling=spelling;
-        this.dateAdded=dateAdded;
-        this.reviewDate=reviewDate;
+        this.interval = interval;
+        this.spelling = spelling;
+        this.dateAdded = dateAdded;
+        this.reviewDate = reviewDate;
         this.boxNumnber = boxNumber;
     }
 }
