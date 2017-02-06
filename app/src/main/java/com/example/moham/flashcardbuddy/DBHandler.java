@@ -10,9 +10,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class DBHandler extends SQLiteOpenHelper {
 
@@ -71,7 +76,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         values.put(KEY_SPELLING, ""); // Flashcard Phone Number
         values.put(KEY_DATE_ADDED, Flashcard.getDateAdded()); // Flashcard Phone Number
-        values.put(KEY_REVIEW_DATE, 0); // Flashcard Phone Number
+        values.put(KEY_REVIEW_DATE, Flashcard.getCurrentDate()); // Flashcard Phone Number
 
 // Inserting Row
         db.insert(TABLE_NAME, null, values);
@@ -100,8 +105,10 @@ public class DBHandler extends SQLiteOpenHelper {
         return FlashcardList;
     }
 
-    public List<SuperMemo> getSuperMemoFlashcards() {
+    public List<SuperMemo> getSuperMemoFlashcards() throws ParseException {
         List<SuperMemo> FlashcardList = new ArrayList<SuperMemo>();
+        DateFormat format = new SimpleDateFormat("dd-MM-yyy");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
 // Select All Query
         String selectQuery = "SELECT * FROM SuperMemo";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -109,21 +116,26 @@ public class DBHandler extends SQLiteOpenHelper {
 // looping through all rows and add
 // ng to list
         if (cursor.moveToFirst()) {
-            do {
-                SuperMemo sm = new SuperMemo();
-                sm.setId(Integer.parseInt(cursor.getString(0)));
-                sm.setWord(cursor.getString(1));
-                sm.setInterval(Integer.parseInt(cursor.getString(3)));
-                sm.setEFactor(Double.parseDouble(cursor.getString(4)));//
-                sm.setSpelling(cursor.getString(5));
-                sm.setDateAdded(cursor.getString(6));
-                System.out.println("EMPTY " + cursor.getString(4));//5 is spelling, 6 is dateAdded.
-                // sm.setEFactor(Double.parseDouble(cursor.getString(7)));
-                // Adding contact to list
-                FlashcardList.add(sm);
-            } while (cursor.moveToNext());
+            Date reviewDate = format.parse(cursor.getString(7));
+            Date todaysDate = format.parse(Flashcard.getCurrentDate());
+            if (todaysDate.after(reviewDate) || todaysDate == reviewDate) {//If today is the review day)
+                do {
+                    SuperMemo sm = new SuperMemo();
+                    sm.setId(Integer.parseInt(cursor.getString(0)));
+                    sm.setWord(cursor.getString(1));
+                    sm.setWordTranslated(cursor.getString(2));
+                    sm.setInterval(Integer.parseInt(cursor.getString(3)));
+                    sm.setEFactor(Double.parseDouble(cursor.getString(4)));//
+                    sm.setSpelling(cursor.getString(5));
+                    sm.setDateAdded(cursor.getString(6));
+                    sm.setReviewDate(cursor.getString(7));//5 is spelling, 6 is dateAdded.
+                    // sm.setEFactor(Double.parseDouble(cursor.getString(7)));
+                    // Adding contact to list
+                    FlashcardList.add(sm);
+                } while (cursor.moveToNext());
 
 // return contact list
+            }
         }
         return FlashcardList;
     }
@@ -141,10 +153,12 @@ public class DBHandler extends SQLiteOpenHelper {
                 LeitnerSystem ls = new LeitnerSystem();
                 ls.setId(Integer.parseInt(cursor.getString(0)));
                 ls.setWord(cursor.getString(1));
+                ls.setWordTranslated(cursor.getString(2));
                 ls.setInterval(Integer.parseInt(cursor.getString(3)));
                 ls.setBoxNumnber(Integer.parseInt(cursor.getString(4)));
                 ls.setSpelling(cursor.getString(5));
                 ls.setDateAdded(cursor.getString(6));
+                ls.setReviewDate(cursor.getString(7));
                 FlashcardList.add(ls);
             } while (cursor.moveToNext());
         }
@@ -218,9 +232,12 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteTable(String TABLE_NAME) {
+    public void deleteTable(String TABLE_NAME, String WHERE_CLAUSE) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, null, null);
+        if (WHERE_CLAUSE != "") {
+            WHERE_CLAUSE = "id = 3";
+        }
+        db.delete(TABLE_NAME, WHERE_CLAUSE, null);
         db.close();
     }
 

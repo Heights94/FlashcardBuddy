@@ -14,7 +14,7 @@ public class Flashcard {
     protected String word;
     protected String wordTranslated;
     protected int interval;
-    protected Calendar cal;
+    protected static Calendar cal;
     protected String spelling;
     protected String dateAdded;
     protected String reviewDate;
@@ -42,6 +42,10 @@ public class Flashcard {
         this.word = name;
     }
 
+    public void setWordTranslated(String wordTranslated) {
+        this.wordTranslated = wordTranslated;
+    }
+
     public void setInterval(int interval) {
         this.interval = interval;
     }
@@ -52,6 +56,10 @@ public class Flashcard {
 
     public void setDateAdded(String dateAdded) {
         this.dateAdded = dateAdded;
+    }
+
+    public void setReviewDate(String reviewDate) {
+        this.reviewDate = reviewDate;
     }
 
     public int getId() {
@@ -82,8 +90,12 @@ public class Flashcard {
         return dateAdded;
     }
 
+    public String getReviewDate() {
+        return reviewDate;
+    }
 
-    public String getCurrentDate() {
+
+    public static String getCurrentDate() {
         cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));//Code taken from
         Date currentLocalTime = cal.getTime();
         DateFormat date2 = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
