@@ -2,6 +2,7 @@ package com.example.moham.flashcardbuddy;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -19,14 +20,14 @@ public class LeitnerActivity extends AppCompatActivity {
 
 
     public void beginReview(DBHandler db){
-        List<SuperMemo> rows = null;
+        List<LeitnerSystem> rows = null;
         try {
-            rows = db.getSuperMemoFlashcards();
+            rows = db.getLeitnerFlashcards();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        SuperMemo sm = rows.get(0);
+        LeitnerSystem ls = rows.get(0);
         TextView view = (TextView) findViewById(R.id.word);
-        view.setText(sm.getWordTranslated());
+        view.setText(ls.getWordTranslated());
     }
 }

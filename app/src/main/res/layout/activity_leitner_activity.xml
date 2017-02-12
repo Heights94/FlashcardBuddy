@@ -51,4 +51,15 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/answer"
+        android:layout_marginTop="56dp"
+        android:textSize="80px"
+        android:layout_below="@+id/word"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

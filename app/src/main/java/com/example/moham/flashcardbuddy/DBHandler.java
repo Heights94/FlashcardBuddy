@@ -67,17 +67,17 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_WORD, Flashcard.getWord()); // Flashcard Name
-        values.put(KEY_TRANSLATION, Flashcard.getWordTranslated()); // Flashcard Phone Number
+        values.put(KEY_TRANSLATION, Flashcard.getWordTranslated()); // Only works SuperMemo, but Leitner sets property.
         values.put(KEY_INTERVAL, Flashcard.getInterval()); // Flashcard Phone Number
         if (TABLE_NAME == "SuperMemo") {
             values.put(KEY_EFACTOR, 2.5f);
         } else if (TABLE_NAME == "LeitnerSystem") {
+            System.out.println("The word translated is :" + Flashcard.getWordTranslated());
             values.put(KEY_BOX_NUMBER, 1);
         }
         values.put(KEY_SPELLING, ""); // Flashcard Phone Number
-        values.put(KEY_DATE_ADDED, Flashcard.getDateAdded()); // Flashcard Phone Number
+        values.put(KEY_DATE_ADDED, Flashcard.getCurrentDate()); // Flashcard Phone Number
         values.put(KEY_REVIEW_DATE, Flashcard.getCurrentDate()); // Flashcard Phone Number
-
 // Inserting Row
         db.insert(TABLE_NAME, null, values);
         db.close(); // Closing database connection
@@ -118,7 +118,7 @@ public class DBHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             Date reviewDate = format.parse(cursor.getString(7));
             Date todaysDate = format.parse(Flashcard.getCurrentDate());
-            if (todaysDate.after(reviewDate) || todaysDate == reviewDate) {//If today is the review day)
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day)
                 do {
                     SuperMemo sm = new SuperMemo();
                     sm.setId(Integer.parseInt(cursor.getString(0)));
@@ -140,8 +140,10 @@ public class DBHandler extends SQLiteOpenHelper {
         return FlashcardList;
     }
 
-    public List<LeitnerSystem> getLeitnerFlashcards() {
+    public List<LeitnerSystem> getLeitnerFlashcards() throws ParseException {
         List<LeitnerSystem> FlashcardList = new ArrayList<LeitnerSystem>();
+        DateFormat format = new SimpleDateFormat("dd-MM-yyy");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
 // Select All Query
         String selectQuery = "SELECT * FROM LeitnerSystem";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -149,18 +151,22 @@ public class DBHandler extends SQLiteOpenHelper {
 // looping through all rows and add
 // ng to list
         if (cursor.moveToFirst()) {
-            do {
-                LeitnerSystem ls = new LeitnerSystem();
-                ls.setId(Integer.parseInt(cursor.getString(0)));
-                ls.setWord(cursor.getString(1));
-                ls.setWordTranslated(cursor.getString(2));
-                ls.setInterval(Integer.parseInt(cursor.getString(3)));
-                ls.setBoxNumnber(Integer.parseInt(cursor.getString(4)));
-                ls.setSpelling(cursor.getString(5));
-                ls.setDateAdded(cursor.getString(6));
-                ls.setReviewDate(cursor.getString(7));
-                FlashcardList.add(ls);
-            } while (cursor.moveToNext());
+            Date reviewDate = format.parse(cursor.getString(7));
+            Date todaysDate = format.parse(Flashcard.getCurrentDate());
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day)
+                do {
+                    LeitnerSystem ls = new LeitnerSystem();
+                    ls.setId(Integer.parseInt(cursor.getString(0)));
+                    ls.setWord(cursor.getString(1));
+                    ls.setWordTranslated(cursor.getString(2));
+                    ls.setInterval(Integer.parseInt(cursor.getString(3)));
+                    ls.setBoxNumnber(Integer.parseInt(cursor.getString(4)));
+                    ls.setSpelling(cursor.getString(5));
+                    ls.setDateAdded(cursor.getString(6));
+                    ls.setReviewDate(cursor.getString(7));
+                    FlashcardList.add(ls);
+                } while (cursor.moveToNext());
+            }
         }
 // return contact list
         return FlashcardList;
@@ -234,7 +240,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public void deleteTable(String TABLE_NAME, String WHERE_CLAUSE) {
         SQLiteDatabase db = this.getWritableDatabase();
-        if (WHERE_CLAUSE != "") {
+        if (WHERE_CLAUSE != null) {
             WHERE_CLAUSE = "id = 3";
         }
         db.delete(TABLE_NAME, WHERE_CLAUSE, null);
@@ -243,7 +249,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public void dropTable(String TABLE_NAME) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLE_NAME);
+        db.execSQL("DROP TABLE " + TABLE_NAME);
     }
 }
 

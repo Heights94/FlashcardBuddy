@@ -27,20 +27,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DBHandler db = new DBHandler(this);
-        // SQLiteDatabase s = openOrCreateDatabase("FlashcardBuddy",MODE_PRIVATE,null);
-        // db.onCreate(s);
+
+        //db.dropTable("LeitnerSystem");
+        //db.dropTable("SuperMemo");
+        //SQLiteDatabase s = openOrCreateDatabase("FlashcardBuddy",MODE_PRIVATE,null);
+        //db.onCreate(s);
         // Log.d("TEST:", db.getDatabaseName());
-        // db.showAllTables();
+        //db.showAllTables();
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
-        //db.deleteTable("LeitnerSystem");
-        //db.deleteTable("SuperMemo");
+        db.deleteTable("LeitnerSystem",null);
+        //db.deleteTable("SuperMemo",null);
         //  db.getAvaliableCards("LeitnerSystem");
         databaseStatus(db);
         displaySuperMemoWords(db);
         displayLeitnerSystemWords(db);
         try {
-            wordsAvaliable();
+            //smWordsAvaliable();
+            leitnerWordsAvaliable();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -51,14 +55,12 @@ public class MainActivity extends AppCompatActivity {
         //Log.d("Table name:",db.getDatabaseName());
         //  //db.deleteTable("LeitnerSystem");
         //db.deleteTable("SuperMemo");
-        ////db.dropTable("LeitnerSystem");
-        //db.dropTable("SuperMemo");
         // Reading all shops
 
 
     }
 
-    public void wordsAvaliable() throws ParseException {
+    public void smWordsAvaliable() throws ParseException {
         DBHandler db = new DBHandler(this);
         List<SuperMemo> rows = db.getSuperMemoFlashcards();
         DateFormat format = new SimpleDateFormat("dd-MM-yyy");
@@ -67,7 +69,29 @@ public class MainActivity extends AppCompatActivity {
         for (SuperMemo flashcard : rows) {//For each card..
             Date reviewDate = format.parse(flashcard.getReviewDate());
             Date todaysDate = format.parse(flashcard.getCurrentDate());
-            if (todaysDate.after(reviewDate) || todaysDate == reviewDate) {//If today is the review day
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
+                count++;//Increment the count by 1
+            }
+        }
+        if (count >= 1 && count <= 2) {
+            Button btn = (Button) findViewById(R.id.start_review);
+            btn.setEnabled(true);
+        }
+        TextView view = (TextView) findViewById(R.id.wordsReady);
+        view.setText(Integer.toString(count));
+    }
+
+    public void leitnerWordsAvaliable() throws ParseException {
+        DBHandler db = new DBHandler(this);
+        List<LeitnerSystem> rows = db.getLeitnerFlashcards();
+        System.out.println(rows.size());
+        DateFormat format = new SimpleDateFormat("dd-MM-yyy");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        int count = 0;
+        for (LeitnerSystem flashcard : rows) {//For each card..
+            Date reviewDate = format.parse(flashcard.getReviewDate());
+            Date todaysDate = format.parse(flashcard.getCurrentDate());
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
                 count++;//Increment the count by 1
             }
         }
@@ -115,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         for (SuperMemo flashcard : rows) {
             String log = "Id: " + flashcard.getId()
                     + " ,Word: " + flashcard.getWord()
+                    + " ,Word Translated: " + flashcard.getWordTranslated()
                     + " ,Interval: " + flashcard.getInterval()
                     + " ,eFactor: " + flashcard.getEFactor()
                     + " ,Date added: " + flashcard.getDateAdded()
@@ -125,10 +150,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void displayLeitnerSystemWords(DBHandler db) {
         Log.d("Leitner: ", "Display Leitner cards..");
-        List<LeitnerSystem> rows = db.getLeitnerFlashcards();
+        List<LeitnerSystem> rows = null;
+        try {
+            rows = db.getLeitnerFlashcards();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         for (LeitnerSystem flashcard : rows) {
             String log = "Id: " + flashcard.getId()
                     + " ,Word: " + flashcard.getWord()
+                    + " ,Word Translated: " + flashcard.getWordTranslated()
                     + " ,Interval: " + flashcard.getInterval()
                     + " ,Box Number: " + flashcard.getBoxNumnber()
                     + " ,Date added: " + flashcard.getDateAdded()

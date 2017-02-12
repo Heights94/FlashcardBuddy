@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityUnitTestCase;
+import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
@@ -112,7 +113,7 @@ public class DBHandlerTest {
 
 
     @Test
-    public void wordsAvaliableForReview() throws ParseException {
+    public void smWordsAvaliableForReview() throws ParseException {
         List<SuperMemo> rows = dbHandler.getSuperMemoFlashcards();
         DateFormat format = new SimpleDateFormat("dd-MM-yyy");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -123,22 +124,31 @@ public class DBHandlerTest {
             if (todaysDate.after(reviewDate) || todaysDate == reviewDate) {//If today is the review day
                 count++;//Increment the count by 1
             }
+            Log.d("Count: ", Integer.toString(count));
             System.out.println("Count is " + count);
             System.out.println("Review date is " + flashcard.getReviewDate());
             System.out.println("Current date is " + flashcard.getCurrentDate());
         }
-        if (count >= 1 && count <= 2) {
+    }
 
+    @Test
+    public void leitnerWordsAvaliableForReview() throws ParseException {
+        List<LeitnerSystem> rows = dbHandler.getLeitnerFlashcards();
+        DateFormat format = new SimpleDateFormat("dd-MM-yyy");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        int count = 0;
+        for (LeitnerSystem flashcard : rows) {//For each card..
+            Date reviewDate = format.parse(flashcard.getReviewDate());
+            Date todaysDate = format.parse(flashcard.getCurrentDate());
+            if (todaysDate.after(reviewDate) || todaysDate == reviewDate) {//If today is the review day
+                count++;//Increment the count by 1
+            }
+            System.out.println("Count is " + count);
+            System.out.println("Review date is " + flashcard.getReviewDate());
+            System.out.println("Current date is " + flashcard.getCurrentDate());
         }
     }
 
-        @Test
-        public void checkWord(){
-            List<SuperMemo> rows = dbHandler.getSuperMemoFlashcards();
-            SuperMemo sm = rows.get(0);
-            onView(withId(R.id.word)).check(matches(withText(sm.wordTranslated)));
-        }
-        //onView(withId(R.id.textView)).check(matches(withText("Hello, World!")));
 
 
 

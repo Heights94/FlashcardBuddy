@@ -4,8 +4,7 @@ package com.example.moham.flashcardbuddy;
  * Created by moham on 21/01/2017.
  */
 public class LeitnerSystem extends Flashcard {
-
-    private String wordTranslated;
+    
     private int boxNumnber;
 
     public void setBoxNumnber(int boxNumnber) {
