@@ -21,7 +21,9 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.example.moham.flashcardbuddy.MESSAGE";
+    public MainActivity(){
 
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +62,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void smWordsAvaliable() throws ParseException {
+
+
+    @Override
+    protected void onResume()
+    {
+        // TODO Auto-generated method stub
+        super.onResume();
+        try {
+            //smWordsAvaliable();
+            leitnerWordsAvaliable();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int smWordsAvaliable() throws ParseException {
         DBHandler db = new DBHandler(this);
         List<SuperMemo> rows = db.getSuperMemoFlashcards();
         DateFormat format = new SimpleDateFormat("dd-MM-yyy");
@@ -79,29 +96,25 @@ public class MainActivity extends AppCompatActivity {
         }
         TextView view = (TextView) findViewById(R.id.wordsReady);
         view.setText(Integer.toString(count));
+        return count;
     }
 
-    public void leitnerWordsAvaliable() throws ParseException {
+    public int leitnerWordsAvaliable() throws ParseException {
         DBHandler db = new DBHandler(this);
-        List<LeitnerSystem> rows = db.getLeitnerFlashcards();
-        System.out.println(rows.size());
-        DateFormat format = new SimpleDateFormat("dd-MM-yyy");
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        int count = 0;
-        for (LeitnerSystem flashcard : rows) {//For each card..
-            Date reviewDate = format.parse(flashcard.getReviewDate());
-            Date todaysDate = format.parse(flashcard.getCurrentDate());
-            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
-                count++;//Increment the count by 1
-            }
-        }
+        int count = db.leitnerWordCount();
+        System.out.println("Current count is : " + count);
+        Button btn = (Button) findViewById(R.id.start_review);
         if (count >= 1 && count <= 2) {
-            Button btn = (Button) findViewById(R.id.start_review);
             btn.setEnabled(true);
+        } else {
+            btn.setEnabled(false);
         }
         TextView view = (TextView) findViewById(R.id.wordsReady);
         view.setText(Integer.toString(count));
+        return count;
     }
+
+
 
     public void openActivity(View view) {
         Intent intent = new Intent(this, LeitnerActivity.class);

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/word"
+        android:id="@+id/wordText"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
@@ -24,30 +24,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="CHECK ANSWER"
-        android:id="@+id/button2"
+        android:id="@+id/answerButton"
         android:layout_marginBottom="92dp"
         android:textSize="50px"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="checkAnswer"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_above="@+id/button2"
+        android:id="@+id/answerField"
+        android:layout_above="@+id/answerButton"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="29dp"
         android:inputType="text"
         android:minWidth="500px"
         android:textSize="70px"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:focusable="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Word to spell:"
-        android:id="@+id/textView2"
+        android:id="@+id/wordLabel"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:textStyle="bold" />
@@ -57,9 +59,48 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/answer"
+        android:id="@+id/answerText"
         android:layout_marginTop="56dp"
         android:textSize="80px"
-        android:layout_below="@+id/word"
+        android:layout_below="@+id/wordText"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Answer in Japanese:"
+        android:id="@+id/answerLabel"
+        android:textStyle="bold"
+        android:layout_marginTop="29dp"
+        android:layout_below="@+id/wordText"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DIFFICULT"
+        android:id="@+id/difficultButton"
+        android:textSize="50px"
+        android:onClick=""
+        android:backgroundTint="#a60000"
+        android:textColor="#ffffff"
+        android:layout_alignTop="@+id/answerButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="25dp"
+        android:visibility="invisible" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OKAY"
+        android:id="@+id/okayButton"
+        android:textSize="50px"
+        android:onClick="okayButton"
+        android:backgroundTint="#0cae00"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/answerField"
+        android:layout_toEndOf="@+id/wordLabel"
+        android:visibility="invisible" />
 </RelativeLayout>

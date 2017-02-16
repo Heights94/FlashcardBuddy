@@ -1,6 +1,5 @@
 package com.example.moham.flashcardbuddy;
 
-import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityUnitTestCase;
@@ -12,14 +11,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
 import java.util.List;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Created by moham on 06/02/2017.
@@ -33,6 +36,7 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
     }
 
     private DBHandler dbHandler;
+    ;
     /* Instantiate an IntentsTestRule object. */
     @Rule
     public ActivityTestRule mActivityRule = new ActivityTestRule<>(
@@ -50,7 +54,7 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
     }
 
     @Test
-    public void testBeginReview() throws Exception {
+    public void checkWordText() throws Exception {
         List<LeitnerSystem> rows = dbHandler.getLeitnerFlashcards();
         LeitnerSystem ls = rows.get(0);
         String log = "";
@@ -62,15 +66,85 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
                 + " ,Date added: " + ls.getDateAdded()
                 + " ,Review date: " + ls.getReviewDate();
         Log.d("Leitner:", log);
-        onView(withId(R.id.word)).check(matches(withText(ls.getWordTranslated())));
+        onView(withId(R.id.wordText)).check(matches(withText(ls.getWordTranslated())));
     }
 
     // @Test
     public void testBeginReview2() throws Exception {
         List<SuperMemo> rows = dbHandler.getSuperMemoFlashcards();
         SuperMemo sm = rows.get(0);
-        System.out.println("STUFF " + sm.getWordTranslated());
-        onView(withId(R.id.word)).check(matches(withText(sm.getWordTranslated())));
+        String log = "";
+        log = "Id: " + sm.getId()
+                + " ,Word: " + sm.getWord()
+                + " ,WordTranslated: " + sm.getWordTranslated()
+                + " ,Interval: " + sm.getInterval()
+                + " ,EFactor: " + sm.getEFactor()
+                + " ,Date added: " + sm.getDateAdded()
+                + " ,Review date: " + sm.getReviewDate();
+        Log.d("SuperMemo:", log);
+        onView(withId(R.id.wordText)).check(matches(withText(sm.getWordTranslated())));
+    }
+
+
+    @Test
+    public void checkAnswerTextIsNotVisible() {
+        onView(withId(R.id.answerText)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
+    public void checkAnswerTextIsVisible() {
+        onView(withId(R.id.answerButton))
+                .perform(click());
+        onView(withId(R.id.answerText))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void checkAnswerText() throws ParseException {
+        List<LeitnerSystem> rows = dbHandler.getLeitnerFlashcards();
+        LeitnerSystem ls = rows.get(0);
+        onView(withId(R.id.answerText)).check(matches(withText(ls.getWord())));
+    }
+
+    @Test
+    public void checRateAnswerIsVisible() {
+        onView(withId(R.id.answerButton))
+                .perform(click());
+        onView(withId(R.id.okayButton))
+                .check(matches(isDisplayed()));
+        onView(withId(R.id.difficultButton))
+                .check(matches(isDisplayed()));
+        onView(withId(R.id.answerButton))
+                .check(matches(not(isDisplayed())));
+    }
+
+    @Test
+    public void checkAnswerFieldIsEnabled() {
+        onView(withId(R.id.answerButton))
+                .perform(click());
+        onView(withId(R.id.answerField))
+                .check(matches(not(isEnabled())));
+    }
+
+    @Test
+    public void checkWordCountMatchesWordsForReview() throws ParseException {
+        int wordCount = dbHandler.leitnerWordCount();//Word count from the "Words avaliable for review".
+        List<LeitnerSystem> leitnerWordList = dbHandler.firstWord();//Gets the list of words due for review.
+        assertEquals(wordCount, leitnerWordList.size());//Compares the size of the list of words to the wordCount, should always be equal.
+    }
+
+    @Test
+    public void checkAnswerButtonsAreHidden(){
+        onView(withId(R.id.answerButton))
+                .perform(click());
+        onView(withId(R.id.okayButton))
+                .perform(click());
+        onView(withId(R.id.answerButton))
+                .check(matches(isDisplayed()));
+        onView(withId(R.id.okayButton))
+                .check(matches(not(isDisplayed())));
+        onView(withId(R.id.difficultButton))
+                .check(matches(not(isDisplayed())));
     }
 
 }

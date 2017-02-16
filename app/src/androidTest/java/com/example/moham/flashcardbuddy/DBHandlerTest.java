@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -53,6 +55,13 @@ public class DBHandlerTest {
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
         dbHandler = new DBHandler(getTargetContext());
+        dbHandler.deleteTable("LeitnerSystem", null);
+        dbHandler.deleteTable("SuperMemo", null);
+        dbHandler.addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
+        dbHandler.addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
+        dbHandler.addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
+        dbHandler.addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
+
     }
 
     @After
@@ -91,11 +100,11 @@ public class DBHandlerTest {
         String dateAdded = flashcard.getCurrentDate();
         SuperMemo sm = new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0);
         dbHandler.addFlashcard(sm, "SuperMemo");
-        dbHandler.deleteTable("SuperMemo", "1");
         System.out.println("EF value is " + sm.getEFactor());
         System.out.println("Current date is: " + sm.getDateAdded());
-        assertEquals(sm.getEFactor(), 2.5f, 0.0);//eFactor has to be 2.5 exactly.
+        assertEquals(2.5f, sm.getEFactor(), 0.0);//eFactor has to be 2.5 exactly.
         assertEquals(dateAdded, sm.getDateAdded());//Checks if dates matches
+        dbHandler.deleteTable("SuperMemo", "1");
     }
 
     @Test
@@ -104,11 +113,11 @@ public class DBHandlerTest {
         String dateAdded = flashcard.getCurrentDate();
         LeitnerSystem ls = new LeitnerSystem(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 1);
         dbHandler.addFlashcard(ls, "LeitnerSystem");
-        dbHandler.deleteTable("LeitnerSystem", "1");
         System.out.println("Box number is " + ls.getBoxNumnber());
         System.out.println("Current date is: " + ls.getDateAdded());
-        assertEquals(ls.getBoxNumnber(), 1);//Box number has to start at 1.
+        assertEquals(1, ls.getBoxNumnber());//Box number has to start at 1.
         assertEquals(dateAdded, ls.getDateAdded());//Checks if dates matches
+        dbHandler.deleteTable("LeitnerSystem", "1");
     }
 
 
@@ -149,7 +158,24 @@ public class DBHandlerTest {
         }
     }
 
+   /* Need to do this with a new word */
+    @Test
+    public void wordIsRatedGood() throws ParseException {
+        DateFormat format = new SimpleDateFormat("dd-MM-yyy");
+        String newReviewDate = "";
+        List<LeitnerSystem> rows = dbHandler.firstWord();//Won't work, has if condition. But one word should show still.
+        LeitnerSystem ls = rows.get(0); //Original data, first card.
 
 
+        Calendar c = Calendar.getInstance();
+        c.setTime(format.parse(ls.getReviewDate()));
+        c.add(Calendar.DATE, 4);  // number of days to add
+        newReviewDate = format.format(c.getTime());  // dt is now the new date
 
+        dbHandler.updateLeitnerWord(ls,"okay");
+        List<LeitnerSystem> rows2 = dbHandler.getLeitnerFlashcards();
+        LeitnerSystem ls2 = rows2.get(0);//Updated data
+        assertEquals(ls.getBoxNumnber() + 1, ls2.getBoxNumnber());//Checks if dates matches
+        assertEquals(newReviewDate,ls2.getReviewDate());
+    }
 }
