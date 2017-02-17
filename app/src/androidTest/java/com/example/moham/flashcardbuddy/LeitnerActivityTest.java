@@ -35,7 +35,7 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
         super(LeitnerActivity.class);
     }
 
-    private DBHandler dbHandler;
+    private lsMethods lsMethods;
     ;
     /* Instantiate an IntentsTestRule object. */
     @Rule
@@ -45,17 +45,17 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
     @Before
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
-        dbHandler = new DBHandler(getTargetContext());
+        lsMethods = new lsMethods(getTargetContext());
     }
 
     @After
     public void tearDown() throws Exception {
-        dbHandler.close();
+        lsMethods.close();
     }
 
     @Test
     public void checkWordText() throws Exception {
-        List<LeitnerSystem> rows = dbHandler.getLeitnerFlashcards();
+        List<LeitnerSystem> rows = lsMethods.getLeitnerFlashcards();
         LeitnerSystem ls = rows.get(0);
         String log = "";
         log = "Id: " + ls.getId()
@@ -69,9 +69,9 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
         onView(withId(R.id.wordText)).check(matches(withText(ls.getWordTranslated())));
     }
 
-    // @Test
+    /*@Test
     public void testBeginReview2() throws Exception {
-        List<SuperMemo> rows = dbHandler.getSuperMemoFlashcards();
+        //List<SuperMemo> rows = dbHandler.getSuperMemoFlashcards();
         SuperMemo sm = rows.get(0);
         String log = "";
         log = "Id: " + sm.getId()
@@ -84,7 +84,7 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
         Log.d("SuperMemo:", log);
         onView(withId(R.id.wordText)).check(matches(withText(sm.getWordTranslated())));
     }
-
+*/
 
     @Test
     public void checkAnswerTextIsNotVisible() {
@@ -101,7 +101,7 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
 
     @Test
     public void checkAnswerText() throws ParseException {
-        List<LeitnerSystem> rows = dbHandler.getLeitnerFlashcards();
+        List<LeitnerSystem> rows = lsMethods.getLeitnerFlashcards();
         LeitnerSystem ls = rows.get(0);
         onView(withId(R.id.answerText)).check(matches(withText(ls.getWord())));
     }
@@ -128,8 +128,8 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
 
     @Test
     public void checkWordCountMatchesWordsForReview() throws ParseException {
-        int wordCount = dbHandler.leitnerWordCount();//Word count from the "Words avaliable for review".
-        List<LeitnerSystem> leitnerWordList = dbHandler.firstWord();//Gets the list of words due for review.
+        int wordCount = lsMethods.leitnerWordCount();//Word count from the "Words avaliable for review".
+        List<LeitnerSystem> leitnerWordList = lsMethods.todaysWordReviewList();//Gets the list of words due for review.
         assertEquals(wordCount, leitnerWordList.size());//Compares the size of the list of words to the wordCount, should always be equal.
     }
 

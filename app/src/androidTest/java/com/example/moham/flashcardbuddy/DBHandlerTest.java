@@ -32,22 +32,9 @@ import static org.junit.Assert.*;
 /**
  * Created by moham on 02/02/2017.
  */
-//@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4.class)
 public class DBHandlerTest {
 
-    public DBHandlerTest() {
-
-    }
-
-
-    /*
-    public DBHandlerTest(){
-
-    }
-    public DBHandlerTest(Context context) {
-        super(context);
-    }
-*/
     private DBHandler dbHandler;
 
 
@@ -72,9 +59,8 @@ public class DBHandlerTest {
     /* Returns false if the database isn't empty. */
     @Test
     public void databaseIsEmpty() {
-        // dbHandler.deleteTable("SuperMemo");
-        boolean leitnerTableEmpty = dbHandler.checkDatabase("LeitnerSystem");
-        boolean SuperMemoEmpty = dbHandler.checkDatabase("SuperMemo");
+        boolean leitnerTableEmpty = dbHandler.databaseEmpty("LeitnerSystem");
+        boolean SuperMemoEmpty = dbHandler.databaseEmpty("SuperMemo");
         assertEquals(false, leitnerTableEmpty);
         assertEquals(false, SuperMemoEmpty);
     }
@@ -121,61 +107,6 @@ public class DBHandlerTest {
     }
 
 
-    @Test
-    public void smWordsAvaliableForReview() throws ParseException {
-        List<SuperMemo> rows = dbHandler.getSuperMemoFlashcards();
-        DateFormat format = new SimpleDateFormat("dd-MM-yyy");
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        int count = 0;
-        for (SuperMemo flashcard : rows) {//For each card..
-            Date reviewDate = format.parse(flashcard.getReviewDate());
-            Date todaysDate = format.parse(flashcard.getCurrentDate());
-            if (todaysDate.after(reviewDate) || todaysDate == reviewDate) {//If today is the review day
-                count++;//Increment the count by 1
-            }
-            Log.d("Count: ", Integer.toString(count));
-            System.out.println("Count is " + count);
-            System.out.println("Review date is " + flashcard.getReviewDate());
-            System.out.println("Current date is " + flashcard.getCurrentDate());
-        }
-    }
-
-    @Test
-    public void leitnerWordsAvaliableForReview() throws ParseException {
-        List<LeitnerSystem> rows = dbHandler.getLeitnerFlashcards();
-        DateFormat format = new SimpleDateFormat("dd-MM-yyy");
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        int count = 0;
-        for (LeitnerSystem flashcard : rows) {//For each card..
-            Date reviewDate = format.parse(flashcard.getReviewDate());
-            Date todaysDate = format.parse(flashcard.getCurrentDate());
-            if (todaysDate.after(reviewDate) || todaysDate == reviewDate) {//If today is the review day
-                count++;//Increment the count by 1
-            }
-            System.out.println("Count is " + count);
-            System.out.println("Review date is " + flashcard.getReviewDate());
-            System.out.println("Current date is " + flashcard.getCurrentDate());
-        }
-    }
-
-   /* Need to do this with a new word */
-    @Test
-    public void wordIsRatedGood() throws ParseException {
-        DateFormat format = new SimpleDateFormat("dd-MM-yyy");
-        String newReviewDate = "";
-        List<LeitnerSystem> rows = dbHandler.firstWord();//Won't work, has if condition. But one word should show still.
-        LeitnerSystem ls = rows.get(0); //Original data, first card.
 
 
-        Calendar c = Calendar.getInstance();
-        c.setTime(format.parse(ls.getReviewDate()));
-        c.add(Calendar.DATE, 4);  // number of days to add
-        newReviewDate = format.format(c.getTime());  // dt is now the new date
-
-        dbHandler.updateLeitnerWord(ls,"okay");
-        List<LeitnerSystem> rows2 = dbHandler.getLeitnerFlashcards();
-        LeitnerSystem ls2 = rows2.get(0);//Updated data
-        assertEquals(ls.getBoxNumnber() + 1, ls2.getBoxNumnber());//Checks if dates matches
-        assertEquals(newReviewDate,ls2.getReviewDate());
-    }
 }

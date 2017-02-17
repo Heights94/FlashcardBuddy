@@ -20,7 +20,7 @@ import java.util.TimeZone;
 public class LeitnerActivity extends AppCompatActivity {
 
     private List<LeitnerSystem> rows = new ArrayList<>();
-    private DBHandler db = new DBHandler(this);
+    private lsMethods db = new lsMethods(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class LeitnerActivity extends AppCompatActivity {
 
     public void beginReview() {
         try {
-            rows = db.firstWord();
+            rows = db.todaysWordReviewList();
             if (rows.size() == 0) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
