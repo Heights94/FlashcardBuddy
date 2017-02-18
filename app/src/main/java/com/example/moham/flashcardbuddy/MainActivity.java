@@ -34,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
         //db.showAllTables();
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
-        db.deleteTable("LeitnerSystem", null);
+       // db.deleteTable("LeitnerSystem", null);
         //db.deleteTable("SuperMemo",null);
         //  db.getAvaliableCards("LeitnerSystem");
         db.databaseStatus();
-        smMethods.displaySuperMemoWords();//Select statement which prints all SuperMemo data to the console.
+       // smMethods.displaySuperMemoWords();//Select statement which prints all SuperMemo data to the console.
         lsMethods.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
         try {
             //smWordsAvaliable();

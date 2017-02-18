@@ -83,7 +83,7 @@
         android:text="DIFFICULT"
         android:id="@+id/difficultButton"
         android:textSize="50px"
-        android:onClick=""
+        android:onClick="difficultButton"
         android:backgroundTint="#a60000"
         android:textColor="#ffffff"
         android:layout_alignTop="@+id/answerButton"

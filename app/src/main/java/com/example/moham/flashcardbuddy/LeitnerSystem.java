@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -37,5 +38,14 @@ public class LeitnerSystem extends Flashcard {
         this.boxNumnber = boxNumber;
     }
 
+    public static String getCurrentDate() {
+        cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));//Code taken from
+        Date currentLocalTime = cal.getTime();
+        DateFormat date2 = new SimpleDateFormat(" dd-MM-yyy HH:mm:ss");
+        DateFormat date = new SimpleDateFormat("EEEE dd-MM-yyy");
+        date.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String localTime = date.format(currentLocalTime);
+        return localTime;
+    }
 
 }

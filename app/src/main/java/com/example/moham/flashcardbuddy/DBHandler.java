@@ -71,13 +71,15 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_INTERVAL, Flashcard.getInterval()); // Flashcard Phone Number
         if (TABLE_NAME == "SuperMemo") {
             values.put(KEY_EFACTOR, 2.5f);
+            values.put(KEY_DATE_ADDED, Flashcard.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_REVIEW_DATE, Flashcard.getCurrentDate()); // Flashcard Phone Number
         } else if (TABLE_NAME == "LeitnerSystem") {
             System.out.println("The word translated is :" + Flashcard.getWordTranslated());
             values.put(KEY_BOX_NUMBER, 1);
+            values.put(KEY_DATE_ADDED, LeitnerSystem.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_REVIEW_DATE, LeitnerSystem.getCurrentDate()); // Flashcard Phone Number
         }
         values.put(KEY_SPELLING, ""); // Flashcard Phone Number
-        values.put(KEY_DATE_ADDED, Flashcard.getCurrentDate()); // Flashcard Phone Number
-        values.put(KEY_REVIEW_DATE, Flashcard.getCurrentDate()); // Flashcard Phone Number
 // Inserting Row
         db.insert(TABLE_NAME, null, values);
         db.close(); // Closing database connection
@@ -150,8 +152,8 @@ public class DBHandler extends SQLiteOpenHelper {
         Flashcard flashcard = new Flashcard();
         if (databaseEmpty("LeitnerSystem")) {
             Log.d("Empty database: ", "Adding data ..");
-            addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 1), "LeitnerSystem");
-            addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 1), "LeitnerSystem");
+            addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, LeitnerSystem.getCurrentDate(), LeitnerSystem.getCurrentDate(), 1), "LeitnerSystem");
+            addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, LeitnerSystem.getCurrentDate(), LeitnerSystem.getCurrentDate(), 1), "LeitnerSystem");
         } else {
             Log.d("Full LeitnerSystem:", "Enough data is already stored ..");
         }

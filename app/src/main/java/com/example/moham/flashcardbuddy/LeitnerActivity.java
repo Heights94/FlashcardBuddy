@@ -87,6 +87,17 @@ public class LeitnerActivity extends AppCompatActivity {
         }
     }
 
+    public void difficultButton(View view) {
+        try {
+            hideAnswer();
+            LeitnerSystem ls = rows.get(0);
+            db.updateLeitnerWord(ls, "difficult");
+            beginReview();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void disableEditText(EditText editText) {
         editText.setFocusable(false);
         editText.setEnabled(false);
