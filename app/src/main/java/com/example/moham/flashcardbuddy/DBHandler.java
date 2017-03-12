@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -27,6 +28,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "FlashcardBuddy";
     // Table names
     private static final String TABLE_LEITNER_SYSTEM = "LeitnerSystem";
+    private static final String TABLE_RESULTS = "Results";
     private static final String TABLE_SUPERMEMO = "SuperMemo";
     // Flashcards Table Columns names
     private static final String KEY_ID = "id";
@@ -36,8 +38,17 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_INTERVAL = "repetitionInterval";
     private static final String KEY_DATE_ADDED = "dateAdded";
     private static final String KEY_REVIEW_DATE = "reviewDate";
-    private static final String KEY_EFACTOR = "efactor";
-    private static final String KEY_BOX_NUMBER = "boxNumber";
+
+    private static final String KEY_EFACTOR = "efactor";//Column exclusive to SuperMemo.
+    private static final String KEY_BOX_NUMBER = "boxNumber";//Column exclusive to the LeitnerSystem.
+
+    /* Column names for the Results table. */
+    private static final String KEY_ALGORITHM = "algorithmName";
+    private static final String KEY_SUCCESS_COUNT = "successCount";
+    private static final String KEY_CURRENT_INTERVAL = "currentInterval";
+    private static final String KEY_SUCCESS_RATE = "successRate";
+    private static final String KEY_START_DATE = "startDate";
+    private static final String KEY_END_DATE = "endDate";
 
 
     public DBHandler(Context context) {
@@ -46,7 +57,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String[] statements = new String[]{createtLeitnerTable(), createSupermemoTable()};
+        String[] statements = new String[]{createtLeitnerTable(), createSupermemoTable(), createResultsTable()};
 
         for (String sql : statements) {
             db.execSQL(sql);
@@ -61,6 +72,57 @@ public class DBHandler extends SQLiteOpenHelper {
 // Creating tables again
         onCreate(db);
     }
+
+    public void displayFlashcards() {
+        Log.d("Flashcard results: ", "Display results cards..");
+        List<Flashcard> rows = null;
+        String dayOfTheWeek = "";
+        try {
+            rows = getFlashcardResults();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        for (Flashcard flashcard : rows) {
+            //dayOfTheWeek = flashcard.getReviewDate().substring(0, 9).replaceAll("\\s", "");//Gets only the name of the day
+            String log = "Id: " + flashcard.getId()
+                    + " ,Algorithm: " + flashcard.getAlgorithmName()
+                    + " ,Success count: " + flashcard.getSuccessCount()
+                    + " ,Current interval: " + flashcard.getCurrentInterval()
+                    + " ,Success rate: " + flashcard.getSuccessRate()
+                    + " ,Start date: " + flashcard.getStartDate()
+                    + " ,End date: " + flashcard.getStartDate();
+            Log.d("Flashcard results: ", log);
+        }
+    }
+
+    public List<Flashcard> getFlashcardResults() throws ParseException {
+        List<Flashcard> FlashcardList = new ArrayList<Flashcard>();
+        DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+// Select All Query
+        String selectQuery = "SELECT * FROM Results";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+// looping through all rows and add
+// ng to list
+        if (cursor.moveToFirst()) {
+            do {
+                Flashcard fc = new Flashcard();
+                fc.setId(Integer.parseInt(cursor.getString(0)));
+                fc.setAlgorithmName(cursor.getString(1));
+                fc.setSuccessCount(Integer.parseInt(cursor.getString(2)));
+                fc.setCurrentInterval(Integer.parseInt(cursor.getString(3)));
+                fc.setSuccessRate(Double.parseDouble(cursor.getString(4)));
+                fc.setStartDate(cursor.getString(5));
+                fc.setEndDate(cursor.getString(6));
+                FlashcardList.add(fc);
+            } while (cursor.moveToNext());
+        }
+
+// return contact list
+        return FlashcardList;
+    }
+
 
     // Adding new Flashcard
     public void addFlashcard(Flashcard Flashcard, String TABLE_NAME) {
@@ -85,6 +147,56 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    // Adding new Flashcard
+    public void addResults(String TABLE_NAME) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ALGORITHM, TABLE_NAME); // Flashcard Name
+        values.put(KEY_SUCCESS_COUNT, 0); // Only works SuperMemo, but Leitner sets property.
+        values.put(KEY_CURRENT_INTERVAL, 0); // Flashcard Phone Number
+        values.put(KEY_SUCCESS_RATE, 0);
+        values.put(KEY_START_DATE, Flashcard.getCurrentDate()); // Flashcard Phone Number
+        values.put(KEY_END_DATE, Flashcard.getCurrentDate()); // Flashcard Phone Number
+
+// Inserting Row
+        db.insert(TABLE_RESULTS, null, values);
+        db.close(); // Closing database connection
+    }
+
+    public void updateResults(int id, String algorithmName, String answerType, int currentInterval) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        int successfulAnswer = 0;
+        double qualityOfResponse = 0;
+
+        if (algorithmName == "LeitnerSystem") {
+            if (answerType == "Okay") {
+                successfulAnswer = 1;
+            } else if (answerType == "Difficult") {
+                successfulAnswer = -1;
+            }
+        }
+
+        if (algorithmName == "SuperMemo") {
+            if (Integer.parseInt(answerType) > qualityOfResponse) {//There's an improvement
+                successfulAnswer = 1;
+            } else if (Integer.parseInt(answerType) < qualityOfResponse) {
+                successfulAnswer = -1;
+            } else if (Integer.parseInt(answerType) == qualityOfResponse) {
+                successfulAnswer = 0;
+            }
+        }
+
+        int successCount = successfulAnswer;
+        double successRate = (successCount / currentInterval) * 100;
+   //     if (currentInterval ==) {
+            values.put(KEY_SUCCESS_COUNT, successCount);
+            values.put(KEY_CURRENT_INTERVAL, currentInterval);
+            values.put(KEY_SUCCESS_RATE, successRate);
+            db.update("Results", values, "id=" + id, null);
+       // }
+    }
+
     // Getting All Flashcards
     public List<Flashcard> getAllFlashcards(String TABLE_NAME, Flashcard flashcard) {
         List<Flashcard> FlashcardList = new ArrayList<Flashcard>();
@@ -106,7 +218,6 @@ public class DBHandler extends SQLiteOpenHelper {
 // return contact list
         return FlashcardList;
     }
-
 
 
     public String createtLeitnerTable() {
@@ -135,6 +246,18 @@ public class DBHandler extends SQLiteOpenHelper {
         return CREATE_SUPERMEMO_TABLE;
     }
 
+    public String createResultsTable() {
+        String CREATE_RESULTS_TABLE = "CREATE TABLE " + TABLE_RESULTS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY, "
+                + KEY_ALGORITHM + " TEXT,"
+                + KEY_SUCCESS_COUNT + " TEXT,"
+                + KEY_CURRENT_INTERVAL + " INTEGER, "
+                + KEY_SUCCESS_RATE + " DOUBLE, "
+                + KEY_START_DATE + " TEXT, "
+                + KEY_END_DATE + " TEXT" + ")";
+        return CREATE_RESULTS_TABLE;
+    }
+
     public int getAvaliableCards(String TABLE_NAME) {
         String selectQuery = "SELECT * FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -153,12 +276,13 @@ public class DBHandler extends SQLiteOpenHelper {
         if (databaseEmpty("LeitnerSystem")) {
             Log.d("Empty database: ", "Adding data ..");
             addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, LeitnerSystem.getCurrentDate(), LeitnerSystem.getCurrentDate(), 1), "LeitnerSystem");
-            addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, LeitnerSystem.getCurrentDate(), LeitnerSystem.getCurrentDate(), 1), "LeitnerSystem");
+            addResults("LeitnerSystem");
+            //addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, LeitnerSystem.getCurrentDate(), LeitnerSystem.getCurrentDate(), 1), "LeitnerSystem");
         } else {
             Log.d("Full LeitnerSystem:", "Enough data is already stored ..");
         }
         if (databaseEmpty("SuperMemo")) {
-            addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
+            //addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
             addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
         } else {
             Log.d("Full SuperMemo: ", "Enough data is already stored ..");

@@ -48,7 +48,6 @@ public class DBHandlerTest {
         dbHandler.addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
         dbHandler.addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
         dbHandler.addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
-
     }
 
     @After
@@ -95,6 +94,7 @@ public class DBHandlerTest {
 
     @Test
     public void addLeitnerWord() {
+        dbHandler.deleteTable("LeitnerSystem", "1");
         Flashcard flashcard = new Flashcard();
         String dateAdded = flashcard.getCurrentDate();
         LeitnerSystem ls = new LeitnerSystem(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 1);

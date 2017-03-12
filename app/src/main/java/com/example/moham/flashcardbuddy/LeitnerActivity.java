@@ -21,6 +21,7 @@ public class LeitnerActivity extends AppCompatActivity {
 
     private List<LeitnerSystem> rows = new ArrayList<>();
     private lsMethods db = new lsMethods(this);
+    private DBHandler dbHandler = new DBHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class LeitnerActivity extends AppCompatActivity {
             hideAnswer();
             LeitnerSystem ls = rows.get(0);
             db.updateLeitnerWord(ls, "okay");
+            dbHandler.updateResults(ls.getId(),"LeitnerSystem","Okay", ls.getInterval() + 1);//Each review, increment the interval. Since ls is the old data before the update.
             beginReview();
         } catch (ParseException e) {
             e.printStackTrace();

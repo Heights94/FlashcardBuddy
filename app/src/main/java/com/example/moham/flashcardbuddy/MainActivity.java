@@ -1,6 +1,7 @@
 package com.example.moham.flashcardbuddy;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -34,12 +35,14 @@ public class MainActivity extends AppCompatActivity {
         //db.showAllTables();
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
-       // db.deleteTable("LeitnerSystem", null);
+        //db.deleteTable("LeitnerSystem", null);
         //db.deleteTable("SuperMemo",null);
+        //db.deleteTable("Results",null);
         //  db.getAvaliableCards("LeitnerSystem");
         db.databaseStatus();
        // smMethods.displaySuperMemoWords();//Select statement which prints all SuperMemo data to the console.
         lsMethods.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
+       db.displayFlashcards();
         try {
             //smWordsAvaliable();
             leitnerWordsAvaliable();

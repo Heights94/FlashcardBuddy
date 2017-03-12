@@ -18,7 +18,12 @@ public class Flashcard {
     protected String spelling;
     protected String dateAdded;
     protected String reviewDate;
-
+    private String algorithmName;
+    private int successCount;
+    private int currentInterval;
+    private double successRate;
+    private String startDate;
+    private String endDate;
 
     public Flashcard() {
 
@@ -62,6 +67,31 @@ public class Flashcard {
         this.reviewDate = reviewDate;
     }
 
+    public void setAlgorithmName(String algorithmName) {
+        this.algorithmName = algorithmName;
+    }
+
+    public void setSuccessCount(int successCount) {
+        this.successCount = successCount;
+    }
+
+    public void setCurrentInterval(int currentInterval) {
+        this.currentInterval = currentInterval;
+    }
+
+    public void setSuccessRate(double successRate) {
+        this.successRate = successRate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+
     public int getId() {
         return id;
     }
@@ -92,6 +122,30 @@ public class Flashcard {
 
     public String getReviewDate() {
         return reviewDate;
+    }
+
+    public String getAlgorithmName() {
+        return algorithmName;
+    }
+
+    public int getSuccessCount() {
+        return successCount;
+    }
+
+    public int getCurrentInterval() {
+        return currentInterval;
+    }
+
+    public double getSuccessRate() {
+        return successRate;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
     }
 
 
