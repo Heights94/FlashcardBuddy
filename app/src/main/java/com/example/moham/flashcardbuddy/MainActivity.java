@@ -1,7 +1,6 @@
 package com.example.moham.flashcardbuddy;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void openActivity(View view) {
-        Intent intent = new Intent(this, LeitnerActivity.class);
+        Intent intent = new Intent(this, FlashcardActivity.class);
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         String message = "It works!";
         intent.putExtra(EXTRA_MESSAGE, message);

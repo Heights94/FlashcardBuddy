@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class LeitnerActivity extends AppCompatActivity {
+public class FlashcardActivity extends AppCompatActivity {
 
     private List<LeitnerSystem> rows = new ArrayList<>();
     private lsMethods db = new lsMethods(this);

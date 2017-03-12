@@ -28,11 +28,11 @@ import static org.hamcrest.Matchers.not;
  * Created by moham on 06/02/2017.
  */
 @RunWith(AndroidJUnit4.class)
-public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
+public class FlashcardActivityTest extends ActivityUnitTestCase<FlashcardActivity> {
 
 
-    public LeitnerActivityTest() {
-        super(LeitnerActivity.class);
+    public FlashcardActivityTest() {
+        super(FlashcardActivity.class);
     }
 
     private lsMethods lsMethods;
@@ -40,7 +40,7 @@ public class LeitnerActivityTest extends ActivityUnitTestCase<LeitnerActivity> {
     /* Instantiate an IntentsTestRule object. */
     @Rule
     public ActivityTestRule mActivityRule = new ActivityTestRule<>(
-            LeitnerActivity.class);
+            FlashcardActivity.class);
 
     @Before
     public void setUp() throws Exception {

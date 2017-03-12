@@ -96,7 +96,7 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         // Verifies that the DisplayMessageActivity received an intent
         // with the correct package name and message.
         intended(allOf(
-                hasComponent(hasShortClassName(".LeitnerActivity")),
+                hasComponent(hasShortClassName(".FlashcardActivity")),
                 toPackage(PACKAGE_NAME),
                 hasExtra(MainActivity.EXTRA_MESSAGE, MESSAGE)));
 
