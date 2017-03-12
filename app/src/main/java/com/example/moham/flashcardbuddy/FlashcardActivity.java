@@ -9,18 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class FlashcardActivity extends AppCompatActivity {
 
     private List<LeitnerSystem> rows = new ArrayList<>();
-    private lsMethods db = new lsMethods(this);
+    private lsManager db = new lsManager(this);
     private DBHandler dbHandler = new DBHandler(this);
 
     @Override

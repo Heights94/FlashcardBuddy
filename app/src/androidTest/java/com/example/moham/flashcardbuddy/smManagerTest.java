@@ -22,17 +22,17 @@ import static org.junit.Assert.*;
  * Created by moham on 17/02/2017.
  */
 @RunWith(AndroidJUnit4.class)
-public class smMethodsTest {
+public class smManagerTest {
 
     private DBHandler dbHandler;
-    private smMethods smMethods;
+    private smManager smManager;
 
 
     @Before
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
         dbHandler = new DBHandler(getTargetContext());
-        smMethods = new smMethods(getTargetContext());
+        smManager = new smManager(getTargetContext());
         dbHandler.deleteTable("LeitnerSystem", null);
         dbHandler.addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
         dbHandler.addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
@@ -45,7 +45,7 @@ public class smMethodsTest {
 
     @Test
     public void smWordsAvaliableForReview() throws ParseException {
-        List<SuperMemo> rows = smMethods.getSuperMemoFlashcards();
+        List<SuperMemo> rows = smManager.getSuperMemoFlashcards();
         DateFormat format = new SimpleDateFormat("dd-MM-yyy");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         int count = 0;
@@ -55,7 +55,7 @@ public class smMethodsTest {
             if (todaysDate.after(reviewDate) || todaysDate == reviewDate) {//If today is the review day
                 count++;//Increment the count by 1
             }
-            assertEquals(smMethods.supermemoWordCount(),count++);
+            assertEquals(smManager.supermemoWordCount(),count++);
             Log.d("Count: ", Integer.toString(count));
             System.out.println("Count is " + count);
             System.out.println("Review date is " + flashcard.getReviewDate());

@@ -17,7 +17,7 @@ import java.util.TimeZone;
 /**
  * Created by moham on 16/02/2017.
  */
-public class smMethods extends SQLiteOpenHelper {
+public class smManager extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     // Database Name
@@ -39,7 +39,7 @@ public class smMethods extends SQLiteOpenHelper {
     private static SQLiteDatabase db;
 
 
-    public smMethods(Context context) {
+    public smManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

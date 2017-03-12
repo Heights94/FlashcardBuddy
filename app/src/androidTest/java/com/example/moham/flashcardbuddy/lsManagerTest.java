@@ -1,7 +1,6 @@
 package com.example.moham.flashcardbuddy;
 
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,9 +11,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static org.hamcrest.Matchers.anyOf;
@@ -25,17 +22,17 @@ import static org.junit.Assert.*;
  * Created by moham on 17/02/2017.
  */
 @RunWith(AndroidJUnit4.class)
-public class lsMethodsTest {
+public class lsManagerTest {
 
     private DBHandler dbHandler;
-    private lsMethods lsMethods;
+    private lsManager lsManager;
 
 
     @Before
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
         dbHandler = new DBHandler(getTargetContext());
-        lsMethods = new lsMethods(getTargetContext());
+        lsManager = new lsManager(getTargetContext());
         dbHandler.deleteTable("LeitnerSystem", null);
         dbHandler.addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
         dbHandler.addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
@@ -48,7 +45,7 @@ public class lsMethodsTest {
 
     @Test
     public void leitnerWordsAvaliableForReview() throws ParseException {
-        int count = lsMethods.leitnerWordCount();
+        int count = lsManager.leitnerWordCount();
         assertEquals(2, count++);
         System.out.println("Leitner Count is " + count);
     }
@@ -58,13 +55,13 @@ public class lsMethodsTest {
     public void wordIsRatedGood() throws ParseException {
         DateFormat dayOnly = new SimpleDateFormat("EEEE");
         String newReviewDay = "";
-        List<LeitnerSystem> rows = lsMethods.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<LeitnerSystem> rows = lsManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
         LeitnerSystem ls = rows.get(0); //Original data, first card.
 
         Calendar c = Calendar.getInstance();
-        lsMethods.updateLeitnerWord(ls, "okay");
+        lsManager.updateLeitnerWord(ls, "okay");
         dbHandler.updateResults(ls.getId(), "LeitnerSystem", "Okay", ls.getInterval() + 1);
-        List<LeitnerSystem> rows2 = lsMethods.getLeitnerFlashcards();
+        List<LeitnerSystem> rows2 = lsManager.getLeitnerFlashcards();
         LeitnerSystem ls2 = rows2.get(0);//Updated data
         c.setTime(dayOnly.parse(ls2.getReviewDate()));
         newReviewDay = dayOnly.format(c.getTime());
@@ -77,18 +74,18 @@ public class lsMethodsTest {
     public void wordIsRatedDifficult() throws ParseException {
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
         String newReviewDate = "";
-        List<LeitnerSystem> rows = lsMethods.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<LeitnerSystem> rows = lsManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
         LeitnerSystem ls = rows.get(0); //Original data, first card.
         int changeBox = 1;
 
-        int newReviewInterval = lsMethods.nextReviewDate(ls.getBoxNumnber(), ls);
+        int newReviewInterval = lsManager.nextReviewDate(ls.getBoxNumnber(), ls);
         Calendar c = Calendar.getInstance();
         c.setTime(format.parse(ls.getReviewDate()));
         c.add(Calendar.DATE, newReviewInterval);  // number of days to add
         newReviewDate = format.format(c.getTime());  // dt is now the new date
 
-        lsMethods.updateLeitnerWord(ls, "difficult");
-        List<LeitnerSystem> rows2 = lsMethods.getLeitnerFlashcards();
+        lsManager.updateLeitnerWord(ls, "difficult");
+        List<LeitnerSystem> rows2 = lsManager.getLeitnerFlashcards();
         LeitnerSystem ls2 = rows2.get(0);//Updated data
         if (ls2.getBoxNumnber() == 1) {//Makes sure boxNumber doesn't go below 1.
             changeBox = 0;
@@ -107,7 +104,7 @@ public class lsMethodsTest {
         for (int i = 1; i < 6; i++) {//Each box
             for(int j=0; j<7;j++) {//Each day of the week for each box.
                 LeitnerSystem ls = new LeitnerSystem(0, "Nani", "What", 1, null, daysOfWeek[j], daysOfWeek[j], i);
-                int newReviewInterval = lsMethods.nextReviewDate(ls.getBoxNumnber(), ls);
+                int newReviewInterval = lsManager.nextReviewDate(ls.getBoxNumnber(), ls);
                 Calendar c = Calendar.getInstance();
                 c.setTime(dayOnly.parse(ls.getReviewDate()));
                 c.add(Calendar.DATE, newReviewInterval);  // number of days to add

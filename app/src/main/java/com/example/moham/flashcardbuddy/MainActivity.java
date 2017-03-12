@@ -13,8 +13,8 @@ public class MainActivity extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.example.moham.flashcardbuddy.MESSAGE";
     private final DBHandler db = new DBHandler(this);
-    private final lsMethods lsMethods = new lsMethods(this);
-    private final smMethods smMethods = new smMethods(this);
+    private final lsManager lsManager = new lsManager(this);
+    private final smManager smManager = new smManager(this);
 
     public MainActivity() {
 
@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
         //db.deleteTable("Results",null);
         //  db.getAvaliableCards("LeitnerSystem");
         db.databaseStatus();
-       // smMethods.displaySuperMemoWords();//Select statement which prints all SuperMemo data to the console.
-        lsMethods.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
+       // smManager.displaySuperMemoWords();//Select statement which prints all SuperMemo data to the console.
+        lsManager.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
        db.displayFlashcards();
         try {
             //smWordsAvaliable();
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public int smWordsAvaliable() throws ParseException {
-        int count = smMethods.supermemoWordCount();
+        int count = smManager.supermemoWordCount();
         System.out.println("Current count is : " + count);
         Button btn = (Button) findViewById(R.id.start_review);
         if (count >= 1 && count <= 2) {
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public int leitnerWordsAvaliable() throws ParseException {
-        int count = lsMethods.leitnerWordCount();
+        int count = lsManager.leitnerWordCount();
         System.out.println("Current count is : " + count);
         Button btn = (Button) findViewById(R.id.start_review);
         if (count >= 1 && count <= 2) {

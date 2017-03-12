@@ -19,7 +19,7 @@ import java.util.TimeZone;
 /**
  * Created by moham on 16/02/2017.
  */
-public class lsMethods extends SQLiteOpenHelper {
+public class lsManager extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     // Database Name
@@ -40,7 +40,7 @@ public class lsMethods extends SQLiteOpenHelper {
     private static SQLiteDatabase db;
 
 
-    public lsMethods(Context context) {
+    public lsManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

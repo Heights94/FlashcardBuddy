@@ -35,7 +35,7 @@ public class FlashcardActivityTest extends ActivityUnitTestCase<FlashcardActivit
         super(FlashcardActivity.class);
     }
 
-    private lsMethods lsMethods;
+    private lsManager lsManager;
     ;
     /* Instantiate an IntentsTestRule object. */
     @Rule
@@ -45,17 +45,17 @@ public class FlashcardActivityTest extends ActivityUnitTestCase<FlashcardActivit
     @Before
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
-        lsMethods = new lsMethods(getTargetContext());
+        lsManager = new lsManager(getTargetContext());
     }
 
     @After
     public void tearDown() throws Exception {
-        lsMethods.close();
+        lsManager.close();
     }
 
     @Test
     public void checkWordText() throws Exception {
-        List<LeitnerSystem> rows = lsMethods.getLeitnerFlashcards();
+        List<LeitnerSystem> rows = lsManager.getLeitnerFlashcards();
         LeitnerSystem ls = rows.get(0);
         String log = "";
         log = "Id: " + ls.getId()
@@ -101,7 +101,7 @@ public class FlashcardActivityTest extends ActivityUnitTestCase<FlashcardActivit
 
     @Test
     public void checkAnswerText() throws ParseException {
-        List<LeitnerSystem> rows = lsMethods.getLeitnerFlashcards();
+        List<LeitnerSystem> rows = lsManager.getLeitnerFlashcards();
         LeitnerSystem ls = rows.get(0);
         onView(withId(R.id.answerText)).check(matches(withText(ls.getWord())));
     }
@@ -128,8 +128,8 @@ public class FlashcardActivityTest extends ActivityUnitTestCase<FlashcardActivit
 
     @Test
     public void checkWordCountMatchesWordsForReview() throws ParseException {
-        int wordCount = lsMethods.leitnerWordCount();//Word count from the "Words avaliable for review".
-        List<LeitnerSystem> leitnerWordList = lsMethods.todaysWordReviewList();//Gets the list of words due for review.
+        int wordCount = lsManager.leitnerWordCount();//Word count from the "Words avaliable for review".
+        List<LeitnerSystem> leitnerWordList = lsManager.todaysWordReviewList();//Gets the list of words due for review.
         assertEquals(wordCount, leitnerWordList.size());//Compares the size of the list of words to the wordCount, should always be equal.
     }
 
