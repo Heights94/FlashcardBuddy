@@ -326,7 +326,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         if (databaseEmpty("SuperMemoAI")) {
             //addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
-            addFlashcard(new SuperMemo(0, "Nani", "Hhat", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemoAI");
+            addFlashcard(new SuperMemo(0, "Nani", "What", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemoAI");
             addResults("SuperMemoAI");
         } else {
             Log.d("Full SuperMemo: ", "Enough data is already stored ..");
