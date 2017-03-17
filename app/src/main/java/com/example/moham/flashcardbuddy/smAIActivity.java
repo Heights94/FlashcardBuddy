@@ -23,6 +23,7 @@ public class smAIActivity extends AppCompatActivity {
     private lsManager lsManager = new lsManager(this);
     private DBHandler dbHandler = new DBHandler(this);
     private SuperMemo currentWord;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +52,8 @@ public class smAIActivity extends AppCompatActivity {
     }
 
     public void checkAnswer(View view) {
-       // RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-       // int rating = (int) ratingBar.getRating();//Will always be a whole number.
+        // RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        // int rating = (int) ratingBar.getRating();//Will always be a whole number.
         TextView answer = (TextView) findViewById(R.id.answerText);
         TextView ratingLabel = (TextView) findViewById(R.id.ratingLabel);
         EditText answerField = (EditText) findViewById(R.id.answerField);
@@ -71,16 +72,22 @@ public class smAIActivity extends AppCompatActivity {
         //int rating = (int) ratingBar.getRating();//Will always be a whole number.
         int newInterval = currentWord.getNextInterval(currentWord.getInterval() + 1);//Uses previous EF value, EF value decreases the harder to remember. Needs to increment the interval by 1 as a review has been just completed.
         currentWord.setInterval(newInterval);
-       // currentWord.setQualityOfResponse(rating);
+        // currentWord.setQualityOfResponse(rating);
         double newEF = currentWord.getNewEFactor();//After each response is made
         System.out.println("Efactor is " + newEF + "Old efactor is " + currentWord.getEFactor());
         currentWord.setEFactor(newEF);
         smAIManager.updateSuperMemoWord(currentWord);
-       // dbHandler.updateResults("SuperMemo", Integer.toString(rating), currentWord.getInterval(), currentWord.getSuccessCount(), currentWord.getQualityOfResponse());
-        if(lsManager.leitnerWordCount() > 0){ // If we have leitner words to review, open that activity
+        // dbHandler.updateResults("SuperMemo", Integer.toString(rating), currentWord.getInterval(), currentWord.getSuccessCount(), currentWord.getQualityOfResponse());
+        if (lsManager.leitnerWordCount() > 0) { // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, lsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            finish();
+        } else if (smManager.SuperMemoWordCount() > 0) { // If we have leitner words to review, open that activity
+            Intent intent = new Intent(this, smActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
         } else {
             beginReview();
         }

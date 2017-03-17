@@ -18,10 +18,12 @@ public class smActivity extends AppCompatActivity {
 
 
     private List<SuperMemo> smWords = new ArrayList<>();
+    private smAIManager smAIManager = new smAIManager(this);
     private smManager smManager = new smManager(this);
     private lsManager lsManager = new lsManager(this);
     private DBHandler dbHandler = new DBHandler(this);
     private SuperMemo currentWord;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +79,13 @@ public class smActivity extends AppCompatActivity {
         currentWord.setEFactor(newEF);
         smManager.updateSuperMemoWord(currentWord);
         dbHandler.updateResults("SuperMemo", Integer.toString(rating), currentWord.getInterval(), currentWord.getSuccessCount(), previousRating);
-        if(lsManager.leitnerWordCount() > 0){ // If we have leitner words to review, open that activity
+        if (lsManager.leitnerWordCount() > 0) { // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, lsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        } else if (smAIManager.SuperMemoWordCount() > 0) { // If we have leitner words to review, open that activity
+            Intent intent = new Intent(this, smAIActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
