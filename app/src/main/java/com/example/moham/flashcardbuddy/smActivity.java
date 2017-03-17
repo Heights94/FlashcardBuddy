@@ -81,6 +81,7 @@ public class smActivity extends AppCompatActivity {
             Intent intent = new Intent(this, lsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
+            finish();
         } else {
             beginReview();
         }
