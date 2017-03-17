@@ -36,11 +36,13 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_TRANSLATION = "wordTranslated";
     private static final String KEY_SPELLING = "last_spelling_error";
     private static final String KEY_INTERVAL = "repetitionInterval";
+   // private static final String KEY_DAYS_LEFT = "daysUntilReview";//Use for leitner.
     private static final String KEY_DATE_ADDED = "dateAdded";
     private static final String KEY_REVIEW_DATE = "reviewDate";
 
     private static final String KEY_EFACTOR = "efactor";//Column exclusive to SuperMemo.
     private static final String KEY_BOX_NUMBER = "boxNumber";//Column exclusive to the LeitnerSystem.
+    private static final String KEY_QUALITY_OF_RESPONSE = "qualityOfResponse";
 
     /* Column names for the Results table. */
     private static final String KEY_ALGORITHM = "algorithmName";
@@ -133,8 +135,9 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_INTERVAL, Flashcard.getInterval()); // Flashcard Phone Number
         if (TABLE_NAME == "SuperMemo") {
             values.put(KEY_EFACTOR, 2.5f);
-            values.put(KEY_DATE_ADDED, Flashcard.getCurrentDate()); // Flashcard Phone Number
-            values.put(KEY_REVIEW_DATE, Flashcard.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_DATE_ADDED, SuperMemo.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_REVIEW_DATE, SuperMemo.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_QUALITY_OF_RESPONSE, -1); // Has to be -1, since you can rate 0 stars, and on the first review, it's technically an improvement.
         } else if (TABLE_NAME == "LeitnerSystem") {
             System.out.println("The word translated is :" + Flashcard.getWordTranslated());
             values.put(KEY_BOX_NUMBER, 1);
@@ -148,7 +151,13 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     // Adding new Flashcard
-    public void addResults(String TABLE_NAME) {
+    public void addResults(String TABLE_NAME) throws ParseException {
+        Calendar c = Calendar.getInstance();
+        DateFormat date = new SimpleDateFormat("dd-MM-yyy");
+        date.setTimeZone(TimeZone.getTimeZone("GMT"));
+        c.setTime(date.parse(Flashcard.getCurrentDate()));
+        c.add(Calendar.WEEK_OF_MONTH, 2);
+        String endDate = date.format(c.getTime());
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_ALGORITHM, TABLE_NAME); // Flashcard Name
@@ -156,20 +165,21 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_CURRENT_INTERVAL, 0); // Flashcard Phone Number
         values.put(KEY_SUCCESS_RATE, 0);
         values.put(KEY_START_DATE, Flashcard.getCurrentDate()); // Flashcard Phone Number
-        values.put(KEY_END_DATE, Flashcard.getCurrentDate()); // Flashcard Phone Number
+        values.put(KEY_END_DATE, endDate); // Flashcard Phone Number
 
 // Inserting Row
         db.insert(TABLE_RESULTS, null, values);
         db.close(); // Closing database connection
     }
 
-    public void updateResults(int id, String algorithmName, String answerType, int currentInterval) {
+    public void updateResults(String algorithmName, String answerType, int currentInterval, int successCount, int qualityOfResponse) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         int successfulAnswer = 0;
-        double qualityOfResponse = 0;
+        int id = 0;
 
         if (algorithmName == "LeitnerSystem") {
+            id = 1;
             if (answerType == "Okay") {
                 successfulAnswer = 1;
             } else if (answerType == "Difficult") {
@@ -178,6 +188,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
 
         if (algorithmName == "SuperMemo") {
+            id = 2;
             if (Integer.parseInt(answerType) > qualityOfResponse) {//There's an improvement
                 successfulAnswer = 1;
             } else if (Integer.parseInt(answerType) < qualityOfResponse) {
@@ -187,10 +198,14 @@ public class DBHandler extends SQLiteOpenHelper {
             }
         }
 
-        int successCount = successfulAnswer;
-        double successRate = (successCount / currentInterval) * 100;
+        successCount = successCount + successfulAnswer;
+        if(successCount < 0){
+            successCount = 0;
+        }
+        double successRate = (successCount / currentInterval) * 100;//successCount is basically subtracts the fail count.
    //     if (currentInterval ==) {
             values.put(KEY_SUCCESS_COUNT, successCount);
+        System.out.println("Updating interval to " + currentInterval + " id is " + id);
             values.put(KEY_CURRENT_INTERVAL, currentInterval);
             values.put(KEY_SUCCESS_RATE, successRate);
             db.update("Results", values, "id=" + id, null);
@@ -241,6 +256,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + KEY_INTERVAL + " INTEGER, "
                 + KEY_EFACTOR + " DOUBLE, "
                 + KEY_SPELLING + " INTEGER, "
+                + KEY_QUALITY_OF_RESPONSE + " INTEGER, "
                 + KEY_DATE_ADDED + " TEXT, "
                 + KEY_REVIEW_DATE + " TEXT" + ")";
         return CREATE_SUPERMEMO_TABLE;
@@ -271,7 +287,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return id;
     }
 
-    public void databaseStatus() {
+    public void databaseStatus() throws ParseException {
         Flashcard flashcard = new Flashcard();
         if (databaseEmpty("LeitnerSystem")) {
             Log.d("Empty database: ", "Adding data ..");
@@ -284,6 +300,7 @@ public class DBHandler extends SQLiteOpenHelper {
         if (databaseEmpty("SuperMemo")) {
             //addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
             addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
+            addResults("SuperMemo");
         } else {
             Log.d("Full SuperMemo: ", "Enough data is already stored ..");
         }

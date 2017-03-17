@@ -1,5 +1,11 @@
 package com.example.moham.flashcardbuddy;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Code adapted from
  */
@@ -16,6 +22,14 @@ public class SuperMemo extends Flashcard {
         return eFactor;
     }
 
+    public int getQualityOfResponse() {
+        return qualityOfResponse;
+    }
+
+    public void setQualityOfResponse(int qualityOfResponse) {
+        this.qualityOfResponse = qualityOfResponse;
+    }
+
     public SuperMemo() {
     }
 
@@ -27,8 +41,8 @@ public class SuperMemo extends Flashcard {
         this.spelling = spelling;
         this.dateAdded = dateAdded;
         this.reviewDate = reviewDate;
-        eFactor = ef;
-        qualityOfResponse = qr;
+        this.eFactor = ef;
+        this.qualityOfResponse = qr;
     }
 
     /* For testing purposes for eF calculations */
@@ -57,5 +71,16 @@ public class SuperMemo extends Flashcard {
         if (newEFactor < 1.3) newEFactor = 1.3;
         return newEFactor;
     }
+
+    public static String getCurrentDate() {
+        cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));//Code taken from
+        Date currentLocalTime = cal.getTime();
+        DateFormat date2 = new SimpleDateFormat(" dd-MM-yyy HH:mm:ss");
+        DateFormat date = new SimpleDateFormat("EEEE dd-MM-yyy");
+        date.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String localTime = date.format(currentLocalTime);
+        return localTime;
+    }
+
 
 }

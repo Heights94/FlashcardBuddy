@@ -34,9 +34,9 @@ public class lsManagerTest {
         dbHandler = new DBHandler(getTargetContext());
         lsManager = new lsManager(getTargetContext());
         dbHandler.deleteTable("LeitnerSystem", null);
+        dbHandler.deleteTable("Results", null);
         dbHandler.addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
-        dbHandler.addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
-    }
+ }
 
     @After
     public void tearDown() throws Exception {
@@ -44,9 +44,9 @@ public class lsManagerTest {
     }
 
     @Test
-    public void leitnerWordsAvaliableForReview() throws ParseException {
+    public void lsWordsAvaliableForReview() throws ParseException {
         int count = lsManager.leitnerWordCount();
-        assertEquals(2, count++);
+        assertEquals(1, count++);
         System.out.println("Leitner Count is " + count);
     }
 
@@ -60,7 +60,7 @@ public class lsManagerTest {
 
         Calendar c = Calendar.getInstance();
         lsManager.updateLeitnerWord(ls, "okay");
-        dbHandler.updateResults(ls.getId(), "LeitnerSystem", "Okay", ls.getInterval() + 1);
+        //dbHandler.updateResults("LeitnerSystem", "Okay", ls.getInterval() + 1,ls.getSuccessCount(),0);
         List<LeitnerSystem> rows2 = lsManager.getLeitnerFlashcards();
         LeitnerSystem ls2 = rows2.get(0);//Updated data
         c.setTime(dayOnly.parse(ls2.getReviewDate()));

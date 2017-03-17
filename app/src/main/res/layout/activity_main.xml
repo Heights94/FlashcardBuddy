@@ -25,16 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Words ready for review:"
-        android:id="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="96dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Welcome to Flashcard Buddy"
         android:id="@+id/textView3"
         android:layout_alignParentTop="true"
@@ -72,25 +62,38 @@
         android:layout_alignRight="@+id/wordsReady"
         android:layout_alignEnd="@+id/wordsReady" />
 
-    <TextView
+    <Button
+        android:text="INSTRUCTIONS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Instructions"
-        android:id="@+id/textView6"
-        android:textStyle="bold"
-        android:layout_below="@+id/textView4"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="21dp" />
+        android:layout_above="@+id/start_review"
+        android:layout_alignStart="@+id/textView3"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="25dp"
+        android:id="@+id/instructions"
+        android:textColor="@android:color/background_light"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="openInstructions" />
+
+    <Button
+        android:text="VIEW RESULTS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/instructions"
+        android:layout_toStartOf="@+id/wordsReady"
+        android:id="@+id/view_results"
+        android:textColor="@android:color/background_light"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="viewResults" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur risus leo, facilisis at lorem vestibulum, ornare posuere metus. Nam porta faucibus ex quis dapibus. Sed id lectus dapibus, finibus sapien a, dictum massa. Fusce venenatis pulvinar justo sed efficitur. Etiam convallis sollicitudin massa vitae semper."
-        android:id="@+id/textView7"
-        android:layout_below="@+id/textView6"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/start_review" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Words ready for review:"
+        android:id="@+id/textView"
+        android:layout_marginTop="70dp"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

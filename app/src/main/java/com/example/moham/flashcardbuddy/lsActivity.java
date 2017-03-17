@@ -13,9 +13,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlashcardActivity extends AppCompatActivity {
+public class lsActivity extends AppCompatActivity {
 
     private List<LeitnerSystem> rows = new ArrayList<>();
+    private smManager smManager = new smManager(this);
     private lsManager db = new lsManager(this);
     private DBHandler dbHandler = new DBHandler(this);
 
@@ -78,8 +79,14 @@ public class FlashcardActivity extends AppCompatActivity {
             hideAnswer();
             LeitnerSystem ls = rows.get(0);
             db.updateLeitnerWord(ls, "okay");
-            dbHandler.updateResults(ls.getId(),"LeitnerSystem","Okay", ls.getInterval() + 1);//Each review, increment the interval. Since ls is the old data before the update.
-            beginReview();
+            dbHandler.updateResults("LeitnerSystem", "Okay", ls.getInterval() + 1, ls.getSuccessCount(),0);//Each review, increment the interval. Since ls is the old data before the update.
+            if (smManager.SuperMemoWordCount() > 0) {
+                Intent intent = new Intent(this, smActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            } else {
+                beginReview();
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -90,7 +97,14 @@ public class FlashcardActivity extends AppCompatActivity {
             hideAnswer();
             LeitnerSystem ls = rows.get(0);
             db.updateLeitnerWord(ls, "difficult");
-            beginReview();
+            dbHandler.updateResults("LeitnerSystem", "Difficult", ls.getInterval() + 1, ls.getSuccessCount(),0);//Each review, increment the interval. Since ls is the old data before the update.
+            if (smManager.SuperMemoWordCount() > 0) {
+                Intent intent = new Intent(this, smActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            } else {
+                beginReview();
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }

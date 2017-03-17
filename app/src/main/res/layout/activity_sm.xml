@@ -31,19 +31,6 @@
         android:layout_centerHorizontal="true"
         android:onClick="checkAnswer"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/answerField"
-        android:layout_above="@+id/answerButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="29dp"
-        android:inputType="text"
-        android:minWidth="500px"
-        android:textSize="70px"
-        android:textAlignment="center"
-        android:focusable="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,36 +58,55 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Answer in Japanese:"
-        android:id="@+id/ratingLabel"
+        android:id="@+id/textView2"
         android:textStyle="bold"
         android:layout_marginTop="29dp"
         android:layout_below="@+id/wordText"
         android:layout_centerHorizontal="true" />
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DIFFICULT"
-        android:id="@+id/difficultButton"
-        android:textSize="50px"
-        android:onClick="difficultButton"
-        android:backgroundTint="#a60000"
-        android:textColor="#ffffff"
-        android:layout_alignTop="@+id/answerButton"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="25dp"
-        android:visibility="invisible" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Rate your Answer:"
+        android:id="@+id/ratingLabel"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        android:layout_above="@+id/ratingBar"
+        android:layout_centerHorizontal="true" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar"
+        android:visibility="invisible"
+        android:layout_above="@+id/answerButton"
+        android:layout_centerHorizontal="true"
+        android:numStars="5"
+        android:stepSize="1" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OKAY"
-        android:id="@+id/okayButton"
+        android:text="SUBMIT RATING"
+        android:id="@+id/submitRating"
         android:textSize="50px"
-        android:onClick="okayButton"
-        android:backgroundTint="#0cae00"
-        android:textColor="#ffffff"
-        android:layout_below="@+id/answerField"
-        android:layout_toEndOf="@+id/wordLabel"
-        android:visibility="invisible" />
+        android:onClick="submitRating"
+        android:visibility="invisible"
+        android:layout_below="@+id/ratingBar"
+        android:layout_alignStart="@+id/answerButton"
+        android:layout_marginTop="30dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/answerField"
+        android:inputType="text"
+        android:minWidth="500px"
+        android:textSize="70px"
+        android:textAlignment="center"
+        android:focusable="true"
+        android:layout_below="@+id/answerText"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

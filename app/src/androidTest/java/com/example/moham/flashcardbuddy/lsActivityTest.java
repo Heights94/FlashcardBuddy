@@ -28,11 +28,11 @@ import static org.hamcrest.Matchers.not;
  * Created by moham on 06/02/2017.
  */
 @RunWith(AndroidJUnit4.class)
-public class FlashcardActivityTest extends ActivityUnitTestCase<FlashcardActivity> {
+public class lsActivityTest extends ActivityUnitTestCase<lsActivity> {
 
 
-    public FlashcardActivityTest() {
-        super(FlashcardActivity.class);
+    public lsActivityTest() {
+        super(lsActivity.class);
     }
 
     private lsManager lsManager;
@@ -40,7 +40,7 @@ public class FlashcardActivityTest extends ActivityUnitTestCase<FlashcardActivit
     /* Instantiate an IntentsTestRule object. */
     @Rule
     public ActivityTestRule mActivityRule = new ActivityTestRule<>(
-            FlashcardActivity.class);
+            lsActivity.class);
 
     @Before
     public void setUp() throws Exception {
@@ -139,12 +139,6 @@ public class FlashcardActivityTest extends ActivityUnitTestCase<FlashcardActivit
                 .perform(click());
         onView(withId(R.id.okayButton))
                 .perform(click());
-        onView(withId(R.id.answerButton))
-                .check(matches(isDisplayed()));
-        onView(withId(R.id.okayButton))
-                .check(matches(not(isDisplayed())));
-        onView(withId(R.id.difficultButton))
-                .check(matches(not(isDisplayed())));
     }
 
 }

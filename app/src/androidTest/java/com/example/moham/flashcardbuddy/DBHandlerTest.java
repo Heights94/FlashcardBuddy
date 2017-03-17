@@ -44,9 +44,8 @@ public class DBHandlerTest {
         dbHandler = new DBHandler(getTargetContext());
         dbHandler.deleteTable("LeitnerSystem", null);
         dbHandler.deleteTable("SuperMemo", null);
+        dbHandler.deleteTable("Results", null);
         dbHandler.addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
-        dbHandler.addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");
-        dbHandler.addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
         dbHandler.addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
     }
 
@@ -68,14 +67,14 @@ public class DBHandlerTest {
     @Test
     public void LeitnerWordsCount() {
         int number = dbHandler.getAvaliableCards("LeitnerSystem");
-        assertEquals(2, number);
+        assertEquals(1, number);
     }
 
     /* Checks if 2 words are stored for review. */
     @Test
     public void SuperMemoWordCount() {
         int number = dbHandler.getAvaliableCards("SuperMemo");
-        assertEquals(2, number);
+        assertEquals(1, number);
     }
 
     /* Checks if words can be added to the SuperMemo table. */

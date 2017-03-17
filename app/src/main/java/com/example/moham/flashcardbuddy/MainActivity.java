@@ -27,24 +27,30 @@ public class MainActivity extends AppCompatActivity {
         DBHandler db = new DBHandler(this);
 
         //db.dropTable("LeitnerSystem");
-        //db.dropTable("SuperMemo");
+       // db.dropTable("SuperMemo");
+        //db.dropTable("Results");
         //SQLiteDatabase s = openOrCreateDatabase("FlashcardBuddy",MODE_PRIVATE,null);
         //db.onCreate(s);
         // Log.d("TEST:", db.getDatabaseName());
         //db.showAllTables();
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
-        //db.deleteTable("LeitnerSystem", null);
-        //db.deleteTable("SuperMemo",null);
-        //db.deleteTable("Results",null);
+       db.deleteTable("LeitnerSystem", null);
+        db.deleteTable("SuperMemo",null);
+       db.deleteTable("Results",null);
         //  db.getAvaliableCards("LeitnerSystem");
-        db.databaseStatus();
-       // smManager.displaySuperMemoWords();//Select statement which prints all SuperMemo data to the console.
+        try {
+            db.databaseStatus();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        // smManager.displaySuperMemoWords();//Select statement which prints all SuperMemo data to the console.
         lsManager.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
+        smManager.displaySuperMemoWords();
        db.displayFlashcards();
         try {
-            //smWordsAvaliable();
-            leitnerWordsAvaliable();
+            checkWordsAvaliable();
+            //leitnerWordsAvaliable();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -67,43 +73,62 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         try {
             //smWordsAvaliable();
-            leitnerWordsAvaliable();
+            checkWordsAvaliable();
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-    public int smWordsAvaliable() throws ParseException {
-        int count = smManager.supermemoWordCount();
-        System.out.println("Current count is : " + count);
+    public void checkWordsAvaliable() throws ParseException {
+        int smWordCount = smWordsAvaliable();
+        int lsWordCount = leitnerWordsAvaliable();
+        int totalWordCount = smWordCount + lsWordCount;
         Button btn = (Button) findViewById(R.id.start_review);
-        if (count >= 1 && count <= 2) {
+        if (totalWordCount >= 1 && totalWordCount <= 2) {
             btn.setEnabled(true);
         } else {
             btn.setEnabled(false);
         }
         TextView view = (TextView) findViewById(R.id.wordsReady);
-        view.setText(Integer.toString(count));
+        view.setText(Integer.toString(totalWordCount));
+
+    }
+    public int smWordsAvaliable() throws ParseException {
+        int count = smManager.SuperMemoWordCount();
+        System.out.println("Current count is : " + count);
         return count;
     }
 
     public int leitnerWordsAvaliable() throws ParseException {
         int count = lsManager.leitnerWordCount();
         System.out.println("Current count is : " + count);
-        Button btn = (Button) findViewById(R.id.start_review);
-        if (count >= 1 && count <= 2) {
-            btn.setEnabled(true);
-        } else {
-            btn.setEnabled(false);
-        }
-        TextView view = (TextView) findViewById(R.id.wordsReady);
-        view.setText(Integer.toString(count));
         return count;
     }
 
+    public void openInstructions(View view) {
+        Intent intent = new Intent(this, instructionsActivity.class);
+        //EditText editText = (EditText) findViewById(R.id.edit_message);
+        String message = "It works!";
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
 
-    public void openActivity(View view) {
-        Intent intent = new Intent(this, FlashcardActivity.class);
+    public void viewResults(View view) {
+        Intent intent = new Intent(this, resultsActivity.class);
+        //EditText editText = (EditText) findViewById(R.id.edit_message);
+        String message = "It works!";
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    public void openActivity(View view) throws ParseException {
+        Intent intent = null;
+        //IF ELSE IF ELSE IF AND CHANGE EACH ALGORITHM.
+        if(leitnerWordsAvaliable() > 0) {
+            intent = new Intent(this, lsActivity.class);
+        } else if (smWordsAvaliable() > 0){
+            intent = new Intent(this, smActivity.class);
+        }
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         String message = "It works!";
         intent.putExtra(EXTRA_MESSAGE, message);

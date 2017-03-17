@@ -88,21 +88,13 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         // Verifies that the DisplayMessageActivity received an intent
         // with the correct package name and message.
         intended(allOf(
-                hasComponent(hasShortClassName(".FlashcardActivity")),
+                hasComponent(hasShortClassName(".lsActivity")),
                 toPackage(PACKAGE_NAME),
                 hasExtra(MainActivity.EXTRA_MESSAGE, MESSAGE)));
 
     }
 
-    @Test
-    public void testIntervalOne() {
-        SuperMemo sm2 = new SuperMemo(0, "MOHAMMED", 2.5f, 4);
-        int newInterval = sm2.getNextInterval(1);//Uses previous EF value, EF value decreases the harder to remember.
-        double newEF = sm2.getNewEFactor();//After each response is made
-        assertEquals(newInterval, 1);
-        assertTrue((2.4 < newEF) && (newEF < 2.6));
-        System.out.println(newEF);
-    }
+
 
 
 

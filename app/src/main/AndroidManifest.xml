@@ -15,7 +15,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FlashcardActivity"></activity>
+        <activity
+            android:name=".lsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".smActivity"
+            android:exported="true" />
+        <activity android:name=".instructionsActivity" />
+        <activity android:name=".resultsActivity"></activity>
     </application>
 
 </manifest>
