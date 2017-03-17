@@ -31,24 +31,11 @@
         android:layout_centerHorizontal="true"
         android:onClick="checkAnswer"/>
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/answerField"
-        android:layout_above="@+id/answerButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="29dp"
-        android:inputType="text"
-        android:minWidth="500px"
-        android:textSize="70px"
-        android:textAlignment="center"
-        android:focusable="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Word to spell:"
+        android:text="Word to translate:"
         android:id="@+id/wordLabel"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -100,7 +87,9 @@
         android:onClick="okayButton"
         android:backgroundTint="#0cae00"
         android:textColor="#ffffff"
-        android:layout_below="@+id/answerField"
-        android:layout_toEndOf="@+id/wordLabel"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:layout_marginEnd="31dp"
+        android:layout_alignBaseline="@+id/answerButton"
+        android:layout_alignBottom="@+id/answerButton"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
