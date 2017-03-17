@@ -21,6 +21,9 @@
         <activity
             android:name=".smActivity"
             android:exported="true" />
+        <activity
+            android:name=".smAIActivity"
+            android:exported="true" />
         <activity android:name=".instructionsActivity" />
         <activity android:name=".resultsActivity"></activity>
     </application>
