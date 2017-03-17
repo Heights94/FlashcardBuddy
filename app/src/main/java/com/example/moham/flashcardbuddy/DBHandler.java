@@ -189,7 +189,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         if (algorithmName == "SuperMemo") {
             id = 2;
-            if (Integer.parseInt(answerType) > qualityOfResponse) {//There's an improvement
+            if (Integer.parseInt(answerType) > qualityOfResponse) {//There's an improvement, rating vs previousRating
                 successfulAnswer = 1;
             } else if (Integer.parseInt(answerType) < qualityOfResponse) {
                 successfulAnswer = -1;

@@ -50,7 +50,7 @@ public class lsActivity extends AppCompatActivity {
 
     public void checkAnswer(View view) {
         TextView answer = (TextView) findViewById(R.id.answerText);
-        EditText answerField = (EditText) findViewById(R.id.answerField);
+        //EditText answerField = (EditText) findViewById(R.id.answerField);
         Button okayButton = (Button) findViewById(R.id.okayButton);
         Button difficultButton = (Button) findViewById(R.id.difficultButton);
         Button answerButton = (Button) findViewById(R.id.answerButton);
@@ -58,12 +58,12 @@ public class lsActivity extends AppCompatActivity {
         okayButton.setVisibility(okayButton.VISIBLE);
         difficultButton.setVisibility(difficultButton.VISIBLE);
         answerButton.setVisibility(answerButton.INVISIBLE);
-        disableEditText(answerField);
+        //disableEditText(answerField);
     }
 
     public void hideAnswer() {
         TextView answer = (TextView) findViewById(R.id.answerText);
-        EditText answerField = (EditText) findViewById(R.id.answerField);
+        //EditText answerField = (EditText) findViewById(R.id.answerField);
         Button okayButton = (Button) findViewById(R.id.okayButton);
         Button difficultButton = (Button) findViewById(R.id.difficultButton);
         Button answerButton = (Button) findViewById(R.id.answerButton);
@@ -71,7 +71,7 @@ public class lsActivity extends AppCompatActivity {
         okayButton.setVisibility(okayButton.INVISIBLE);
         difficultButton.setVisibility(difficultButton.INVISIBLE);
         answerButton.setVisibility(answerButton.VISIBLE);
-        disableEditText(answerField);
+        //disableEditText(answerField);
     }
 
     public void okayButton(View view) {
