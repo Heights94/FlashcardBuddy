@@ -1,6 +1,7 @@
 package com.example.moham.flashcardbuddy;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private final DBHandler db = new DBHandler(this);
     private final lsManager lsManager = new lsManager(this);
     private final smManager smManager = new smManager(this);
+    private final smAIManager smAIManager = new smAIManager(this);
 
     public MainActivity() {
 
@@ -27,17 +29,17 @@ public class MainActivity extends AppCompatActivity {
         DBHandler db = new DBHandler(this);
 
         //db.dropTable("LeitnerSystem");
-       // db.dropTable("SuperMemo");
+        //db.dropTable("SuperMemo");
         //db.dropTable("Results");
-        //SQLiteDatabase s = openOrCreateDatabase("FlashcardBuddy",MODE_PRIVATE,null);
+       // SQLiteDatabase s = openOrCreateDatabase("FlashcardBuddy",MODE_PRIVATE,null);
         //db.onCreate(s);
         // Log.d("TEST:", db.getDatabaseName());
         //db.showAllTables();
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
-       db.deleteTable("LeitnerSystem", null);
-        db.deleteTable("SuperMemo",null);
-       db.deleteTable("Results",null);
+      // db.deleteTable("LeitnerSystem", null);
+        //db.deleteTable("SuperMemo",null);
+       //db.deleteTable("Results",null);
         //  db.getAvaliableCards("LeitnerSystem");
         try {
             db.databaseStatus();
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         // smManager.displaySuperMemoWords();//Select statement which prints all SuperMemo data to the console.
         lsManager.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
         smManager.displaySuperMemoWords();
+        smAIManager.displaySuperMemoWords();
        db.displayFlashcards();
         try {
             checkWordsAvaliable();
@@ -82,9 +85,10 @@ public class MainActivity extends AppCompatActivity {
     public void checkWordsAvaliable() throws ParseException {
         int smWordCount = smWordsAvaliable();
         int lsWordCount = leitnerWordsAvaliable();
-        int totalWordCount = smWordCount + lsWordCount;
+        int smAIWordCount = smAIWordsAvaliable();
+        int totalWordCount = smWordCount + lsWordCount + smAIWordCount;
         Button btn = (Button) findViewById(R.id.start_review);
-        if (totalWordCount >= 1 && totalWordCount <= 2) {
+        if (totalWordCount >= 1 && totalWordCount <= 3) {
             btn.setEnabled(true);
         } else {
             btn.setEnabled(false);
@@ -101,6 +105,12 @@ public class MainActivity extends AppCompatActivity {
 
     public int leitnerWordsAvaliable() throws ParseException {
         int count = lsManager.leitnerWordCount();
+        System.out.println("Current count is : " + count);
+        return count;
+    }
+
+    public int smAIWordsAvaliable() throws ParseException {
+        int count = smAIManager.SuperMemoWordCount();
         System.out.println("Current count is : " + count);
         return count;
     }
@@ -128,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(this, lsActivity.class);
         } else if (smWordsAvaliable() > 0){
             intent = new Intent(this, smActivity.class);
+        } else if (smAIWordsAvaliable() > 0){
+            intent = new Intent(this, smAIActivity.class);
         }
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         String message = "It works!";

@@ -30,6 +30,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String TABLE_LEITNER_SYSTEM = "LeitnerSystem";
     private static final String TABLE_RESULTS = "Results";
     private static final String TABLE_SUPERMEMO = "SuperMemo";
+    private static final String TABLE_SUPERMEMO_AI = "SuperMemoAI";
     // Flashcards Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_WORD = "word";
@@ -59,7 +60,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String[] statements = new String[]{createtLeitnerTable(), createSupermemoTable(), createResultsTable()};
+        String[] statements = new String[]{createtLeitnerTable(), createSupermemoTable(), createSupermemoAITable(), createResultsTable()};
 
         for (String sql : statements) {
             db.execSQL(sql);
@@ -143,6 +144,11 @@ public class DBHandler extends SQLiteOpenHelper {
             values.put(KEY_BOX_NUMBER, 1);
             values.put(KEY_DATE_ADDED, LeitnerSystem.getCurrentDate()); // Flashcard Phone Number
             values.put(KEY_REVIEW_DATE, LeitnerSystem.getCurrentDate()); // Flashcard Phone Number
+        } else if (TABLE_NAME == "SuperMemoAI") {
+            values.put(KEY_EFACTOR, 2.5f);
+            values.put(KEY_DATE_ADDED, SuperMemo.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_REVIEW_DATE, SuperMemo.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_QUALITY_OF_RESPONSE, -1); // Has to be -1, since you can rate 0 stars, and on the first review, it's technically an improvement.
         }
         values.put(KEY_SPELLING, ""); // Flashcard Phone Number
 // Inserting Row
@@ -262,6 +268,20 @@ public class DBHandler extends SQLiteOpenHelper {
         return CREATE_SUPERMEMO_TABLE;
     }
 
+    public String createSupermemoAITable() {
+        String CREATE_SUPERMEMOAI_TABLE = "CREATE TABLE " + TABLE_SUPERMEMO_AI + "("
+                + KEY_ID + " INTEGER PRIMARY KEY, "
+                + KEY_WORD + " TEXT,"
+                + KEY_TRANSLATION + " TEXT,"
+                + KEY_INTERVAL + " INTEGER, "
+                + KEY_EFACTOR + " DOUBLE, "
+                + KEY_SPELLING + " INTEGER, "
+                + KEY_QUALITY_OF_RESPONSE + " INTEGER, "
+                + KEY_DATE_ADDED + " TEXT, "
+                + KEY_REVIEW_DATE + " TEXT" + ")";
+        return CREATE_SUPERMEMOAI_TABLE;
+    }
+
     public String createResultsTable() {
         String CREATE_RESULTS_TABLE = "CREATE TABLE " + TABLE_RESULTS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY, "
@@ -301,6 +321,13 @@ public class DBHandler extends SQLiteOpenHelper {
             //addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
             addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
             addResults("SuperMemo");
+        } else {
+            Log.d("Full SuperMemo: ", "Enough data is already stored ..");
+        }
+        if (databaseEmpty("SuperMemoAI")) {
+            //addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
+            addFlashcard(new SuperMemo(0, "Nani", "Hhat", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemoAI");
+            addResults("SuperMemoAI");
         } else {
             Log.d("Full SuperMemo: ", "Enough data is already stored ..");
         }

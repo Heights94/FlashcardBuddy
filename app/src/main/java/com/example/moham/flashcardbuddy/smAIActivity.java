@@ -18,6 +18,7 @@ public class smAIActivity extends AppCompatActivity {
 
 
     private List<SuperMemo> smWords = new ArrayList<>();
+    private smAIManager smAIManager = new smAIManager(this);
     private smManager smManager = new smManager(this);
     private lsManager lsManager = new lsManager(this);
     private DBHandler dbHandler = new DBHandler(this);
@@ -31,7 +32,7 @@ public class smAIActivity extends AppCompatActivity {
 
     public void beginReview() {
         try {
-            smWords = smManager.todaysWordReviewList();
+            smWords = smAIManager.todaysWordReviewList();
             if (smWords.size() == 0) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -74,7 +75,7 @@ public class smAIActivity extends AppCompatActivity {
         double newEF = currentWord.getNewEFactor();//After each response is made
         System.out.println("Efactor is " + newEF + "Old efactor is " + currentWord.getEFactor());
         currentWord.setEFactor(newEF);
-        smManager.updateSuperMemoWord(currentWord);
+        smAIManager.updateSuperMemoWord(currentWord);
        // dbHandler.updateResults("SuperMemo", Integer.toString(rating), currentWord.getInterval(), currentWord.getSuccessCount(), currentWord.getQualityOfResponse());
         if(lsManager.leitnerWordCount() > 0){ // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, lsActivity.class);
