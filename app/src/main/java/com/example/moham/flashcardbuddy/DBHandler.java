@@ -219,7 +219,7 @@ public class DBHandler extends SQLiteOpenHelper {
         if(successCount < 0){
             successCount = 0;
         }
-        double successRate = (successCount / currentInterval) * 100;//successCount is basically subtracts the fail count.
+        double successRate = (successCount * 100 / currentInterval);//successCount is basically subtracts the fail count.
    //     if (currentInterval ==) {
             values.put(KEY_SUCCESS_COUNT, successCount);
         System.out.println("Updating interval to " + currentInterval + " id is " + id);

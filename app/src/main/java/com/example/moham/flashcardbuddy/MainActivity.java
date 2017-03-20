@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
        db.displayFlashcards();
         try {
             checkWordsAvaliable();
-            //leitnerWordsAvaliable();
         } catch (ParseException e) {
             e.printStackTrace();
         }
