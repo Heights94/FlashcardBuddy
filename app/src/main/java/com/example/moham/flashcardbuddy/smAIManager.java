@@ -89,7 +89,7 @@ public class smAIManager extends SQLiteOpenHelper {
     }
 
     public void displaySuperMemoWords() {
-        Log.d("SuperMemo: ", "Display SuperMemo cards..");
+        Log.d("SuperMemoAI: ", "Display SuperMemo cards..");
         List<SuperMemo> rows = null;
         try {
             rows = getSuperMemoFlashcards();
@@ -103,7 +103,8 @@ public class smAIManager extends SQLiteOpenHelper {
                     + " ,Interval: " + flashcard.getInterval()
                     + " ,eFactor: " + flashcard.getEFactor()
                     + " ,Date added: " + flashcard.getDateAdded()
-                    + " ,Review date: " + flashcard.getReviewDate();
+                    + " ,Review date: " + flashcard.getReviewDate()
+                    + " ,Quality of Response: " + flashcard.getQualityOfResponse();
             Log.d("SuperMemo cards: ", log);
         }
     }

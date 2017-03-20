@@ -103,7 +103,8 @@ public class smManager extends SQLiteOpenHelper {
                     + " ,Interval: " + flashcard.getInterval()
                     + " ,eFactor: " + flashcard.getEFactor()
                     + " ,Date added: " + flashcard.getDateAdded()
-                    + " ,Review date: " + flashcard.getReviewDate();
+                    + " ,Review date: " + flashcard.getReviewDate()
+                    + " ,Quality of Response: " + flashcard.getQualityOfResponse();
             Log.d("SuperMemo cards: ", log);
         }
     }

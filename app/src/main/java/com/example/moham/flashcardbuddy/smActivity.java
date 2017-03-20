@@ -73,7 +73,7 @@ public class smActivity extends AppCompatActivity {
         int previousRating = currentWord.getQualityOfResponse();
         int newInterval = currentWord.getNextInterval(currentWord.getInterval() + 1);//Uses previous EF value, EF value decreases the harder to remember. Needs to increment the interval by 1 as a review has been just completed.
         currentWord.setInterval(newInterval);
-        //currentWord.setQualityOfResponse(rating);
+        currentWord.setQualityOfResponse(rating);//Now independent of updateResults, can set because we have the variable previousRating.
         double newEF = currentWord.getNewEFactor();//After each response is made
         System.out.println("Efactor is " + newEF + "Old efactor is " + currentWord.getEFactor());
         currentWord.setEFactor(newEF);

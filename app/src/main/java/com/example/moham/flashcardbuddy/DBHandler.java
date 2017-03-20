@@ -205,6 +205,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
 
         if (algorithmName == "SuperMemoAI") {
+            System.out.println("The answerType is " + answerType + " Quality " + qualityOfResponse);
             id = 3;
             if (Integer.parseInt(answerType) > qualityOfResponse) {//There's an improvement, rating vs previousRating
                 successfulAnswer = 1;
