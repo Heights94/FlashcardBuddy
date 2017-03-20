@@ -81,6 +81,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/answerField"
         android:inputType="text"
+        android:maxLength="20"
         android:minWidth="500px"
         android:textAlignment="center"
         android:focusable="true"
