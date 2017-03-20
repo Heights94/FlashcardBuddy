@@ -204,6 +204,17 @@ public class DBHandler extends SQLiteOpenHelper {
             }
         }
 
+        if (algorithmName == "SuperMemoAI") {
+            id = 3;
+            if (Integer.parseInt(answerType) > qualityOfResponse) {//There's an improvement, rating vs previousRating
+                successfulAnswer = 1;
+            } else if (Integer.parseInt(answerType) < qualityOfResponse) {
+                successfulAnswer = -1;
+            } else if (Integer.parseInt(answerType) == qualityOfResponse) {
+                successfulAnswer = 0;
+            }
+        }
+
         successCount = successCount + successfulAnswer;
         if(successCount < 0){
             successCount = 0;

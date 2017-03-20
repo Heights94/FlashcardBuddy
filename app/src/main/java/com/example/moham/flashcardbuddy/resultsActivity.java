@@ -52,6 +52,19 @@ private DBHandler dbHandler = new DBHandler(this);
                     successRate.setText(Double.toString(flashcard.getSuccessRate()));
                     startDate.setText(flashcard.getStartDate());
                     endDate.setText(flashcard.getEndDate());
+                } else if(flashcard.getAlgorithmName().equals("SuperMemoAI")){
+                    System.out.println(flashcard.getAlgorithmName());
+                    algorithm = "LS";
+                    successCount = (TextView) findViewById(R.id.successCountSMAI);
+                    currentInterval = (TextView) findViewById(R.id.currentIntervalSMAI);
+                    successRate = (TextView) findViewById(R.id.successRateSMAI);
+                    startDate = (TextView) findViewById(R.id.startDateSMAI);
+                    endDate = (TextView) findViewById(R.id.endDateSMAI);
+                    successCount.setText(Integer.toString(flashcard.getSuccessCount()));
+                    currentInterval.setText(Integer.toString(flashcard.getCurrentInterval()));
+                    successRate.setText(Double.toString(flashcard.getSuccessRate()));
+                    startDate.setText(flashcard.getStartDate());
+                    endDate.setText(flashcard.getEndDate());
                 }
             }
         } catch (ParseException e) {

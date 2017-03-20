@@ -23,6 +23,7 @@ public class smAIActivity extends AppCompatActivity {
     private lsManager lsManager = new lsManager(this);
     private DBHandler dbHandler = new DBHandler(this);
     private SuperMemo currentWord;
+    private int rating = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +52,42 @@ public class smAIActivity extends AppCompatActivity {
         view2.setText(sm.getWord());
     }
 
+    public static boolean isBetween(double x, double lower, double upper) {
+        return lower <= x && x <= upper;
+    }
+
     public void checkAnswer(View view) {
         // RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        // int rating = (int) ratingBar.getRating();//Will always be a whole number.
-        TextView answer = (TextView) findViewById(R.id.answerText);
+
+        TextView actualAnswer = (TextView) findViewById(R.id.answerField);//From the answer input
+        TextView answer = (TextView) findViewById(R.id.answerText);//label
+        int answerLength = answer.getText().toString().length();
+        int incorrectCharacters = calculateQualityOfResponse(answer.getText(), actualAnswer.getText());
+
+
+        double incorrectPercentage = (incorrectCharacters * 100 / answerLength);//How correct it is, the lower the better
+
+        System.out.println("Incorrect is " + incorrectCharacters + " answer length is " + answerLength);
+        System.out.println("Incorrect% is " + (incorrectCharacters * 100 / answerLength));
+
+        if (isBetween(incorrectPercentage, 16.8, 34.9)) {
+            rating = 4;
+            System.out.println("Rating is " + rating + " " + incorrectPercentage);
+        } else if (isBetween(incorrectPercentage, 35, 53.9)) {
+            rating = 3;
+            System.out.println("Rating is " + rating + " " + incorrectPercentage);
+        } else if (isBetween(incorrectPercentage, 54, 72.9)) {
+            rating = 2;
+            System.out.println("Rating is " + rating + " " + incorrectPercentage);
+        } else if (isBetween(incorrectPercentage, 73, 91.9)) {
+            rating = 1;
+            System.out.println("Rating is " + rating + " " + incorrectPercentage);
+        } else if (isBetween(incorrectPercentage, 92, 100)) {
+            rating = 0;
+            System.out.println("Rating is " + rating + " " + incorrectPercentage);
+        }
+
+
         TextView ratingLabel = (TextView) findViewById(R.id.ratingLabel);
         EditText answerField = (EditText) findViewById(R.id.answerField);
         Button answerButton = (Button) findViewById(R.id.answerButton);
@@ -68,8 +101,9 @@ public class smAIActivity extends AppCompatActivity {
     }
 
     public void continueReview(View view) throws ParseException {
-        RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        //RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         //int rating = (int) ratingBar.getRating();//Will always be a whole number.
+        int previousRating = currentWord.getQualityOfResponse();
         int newInterval = currentWord.getNextInterval(currentWord.getInterval() + 1);//Uses previous EF value, EF value decreases the harder to remember. Needs to increment the interval by 1 as a review has been just completed.
         currentWord.setInterval(newInterval);
         // currentWord.setQualityOfResponse(rating);
@@ -77,7 +111,7 @@ public class smAIActivity extends AppCompatActivity {
         System.out.println("Efactor is " + newEF + "Old efactor is " + currentWord.getEFactor());
         currentWord.setEFactor(newEF);
         smAIManager.updateSuperMemoWord(currentWord);
-        // dbHandler.updateResults("SuperMemo", Integer.toString(rating), currentWord.getInterval(), currentWord.getSuccessCount(), currentWord.getQualityOfResponse());
+        dbHandler.updateResults("SuperMemoAI", Integer.toString(rating), currentWord.getInterval(), currentWord.getSuccessCount(), currentWord.getQualityOfResponse());
         if (lsManager.leitnerWordCount() > 0) { // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, lsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -91,6 +125,55 @@ public class smAIActivity extends AppCompatActivity {
         } else {
             beginReview();
         }
+    }
+
+
+    /* Returns how many characters do not match. */
+    public int calculateQualityOfResponse(CharSequence lhs, CharSequence rhs1) {
+        String rhs = "";
+        if (!rhs1.toString().equals("")) {
+            rhs = rhs1.toString().substring(0, 1).toUpperCase() + rhs1.toString().substring(1);
+        }
+        int len0 = lhs.length() + 1;
+        int len1 = rhs.length() + 1;
+
+        // the array of distances
+        int[] cost = new int[len0];
+        int[] newcost = new int[len0];
+
+        // initial cost of skipping prefix in String s0
+        for (int i = 0; i < len0; i++) cost[i] = i;
+
+        // dynamically computing the array of distances
+
+        // transformation cost for each letter in s1
+        for (int j = 1; j < len1; j++) {
+            // initial cost of skipping prefix in String s1
+            newcost[0] = j;
+
+            // transformation cost for each letter in s0
+            for (int i = 1; i < len0; i++) {
+                // matching current letters in both strings
+                int match = (lhs.charAt(i - 1) == rhs.charAt(j - 1)) ? 0 : 1;
+
+                // computing cost for each transformation
+                int cost_replace = cost[i - 1] + match;
+                int cost_insert = cost[i] + 1;
+                int cost_delete = newcost[i - 1] + 1;
+
+                // keep minimum cost
+                newcost[i] = Math.min(Math.min(cost_insert, cost_delete), cost_replace);
+            }
+
+            // swap cost/newcost arrays
+            int[] swap = cost;
+            cost = newcost;
+            newcost = swap;
+        }
+
+        // the distance is the cost for transforming all letters in both strings
+        System.out.println("Cost is " + cost[len0 - 1]);
+        return cost[len0 - 1];
     }
 
     private void disableEditText(EditText editText) {
