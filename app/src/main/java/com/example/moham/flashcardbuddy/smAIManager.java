@@ -101,6 +101,7 @@ public class smAIManager extends SQLiteOpenHelper {
                     + " ,Word: " + flashcard.getWord()
                     + " ,Word Translated: " + flashcard.getWordTranslated()
                     + " ,Interval: " + flashcard.getInterval()
+                    + " ,Spelling: " + flashcard.getSpelling()
                     + " ,eFactor: " + flashcard.getEFactor()
                     + " ,Date added: " + flashcard.getDateAdded()
                     + " ,Review date: " + flashcard.getReviewDate()
@@ -160,6 +161,7 @@ public class smAIManager extends SQLiteOpenHelper {
         c.add(Calendar.DATE, newReviewInterval);
         newReviewDate = format.format(c.getTime());  // dt is now the new date
         values.put(KEY_INTERVAL, sm.getInterval());//Reviewed word now, increment times reviewed.
+        values.put(KEY_SPELLING, sm.getSpelling());
         //System.out.println("Efactor here is " + sm.getEFactor());
         values.put(KEY_EFACTOR, sm.getEFactor());
         values.put(KEY_QUALITY_OF_RESPONSE, sm.getQualityOfResponse());

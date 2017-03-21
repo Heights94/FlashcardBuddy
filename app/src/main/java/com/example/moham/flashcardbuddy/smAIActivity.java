@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -48,12 +49,52 @@ public class smAIActivity extends AppCompatActivity {
         currentWord = sm;
         TextView view = (TextView) findViewById(R.id.wordText);
         TextView view2 = (TextView) findViewById(R.id.answerText);
+        TextView view3 = (TextView) findViewById(R.id.errorsText);
         view.setText(sm.getWordTranslated());
         view2.setText(sm.getWord());
+        if (!sm.getSpelling().equals("")) {//Prevents setting the errorsLabel from being just blank.
+            view3.setText(sm.getSpelling());
+        }
     }
 
     public static boolean isBetween(double x, double lower, double upper) {
         return lower <= x && x <= upper;
+    }
+
+    public String checkSpelling() {
+        TextView actualField = (TextView) findViewById(R.id.answerField);//From the answer input
+        TextView answerText = (TextView) findViewById(R.id.answerText);//label
+        String actual = actualField.getText().toString();
+        String expectedAnswer = answerText.getText().toString();
+        String spelling = "";
+        if (actual.equals("")) {
+            spelling = "Nothing entered.";//Display the incorrect character
+        } else {
+            String actualAnswer = actual.substring(0, 1).toUpperCase() + actual.substring(1);
+            for (int i = 0; i < expectedAnswer.length(); i++) {//do cap first letter
+                char expected = expectedAnswer.charAt(i);
+                if (actualAnswer.length() > i && expected == actualAnswer.charAt(i)) {//Makes sure the actualAnswer has a charAt integer i.
+                    spelling = spelling + "*";//Censor the correwct letter
+                } else if (actualAnswer.length() > i && expected != actualAnswer.charAt(i)) {//Makes sure the actualAnswer has a charAt integer i.
+                    spelling = spelling + actualAnswer.charAt(i);//Display the incorrect character
+                } else {//Makes sure the actualAnswer has a charAt integer i.
+                    spelling = spelling + "_";//Display the incorrect character
+                }
+            }
+            spelling = "Letters left blank are _, the incorrect letters are uncensored: " + spelling;
+        }
+        return  spelling;
+    }
+
+    public void viewPreviousErrors(View view) {
+        TextView errorsText = (TextView) findViewById(R.id.errorsText);//From the answer input
+        boolean checked = ((CheckBox) view).isChecked();
+        if (checked) {
+            errorsText.setVisibility(errorsText.VISIBLE);
+        } else if (!checked) {
+            errorsText.setVisibility(errorsText.INVISIBLE);
+        }
+
     }
 
     public void checkAnswer(View view) {
@@ -109,6 +150,8 @@ public class smAIActivity extends AppCompatActivity {
         currentWord.setQualityOfResponse(rating);//Now independent of updateResults, can set because we have the variable previousRating.
         double newEF = currentWord.getNewEFactor();//After each response is made
         System.out.println("Efactor is " + newEF + "Old efactor is " + currentWord.getEFactor());
+        String spelling = checkSpelling();
+        currentWord.setSpelling(spelling);
         currentWord.setEFactor(newEF);
         smAIManager.updateSuperMemoWord(currentWord);
         dbHandler.updateResults("SuperMemoAI", Integer.toString(rating), currentWord.getInterval(), currentWord.getSuccessCount(), previousRating);

@@ -20,17 +20,6 @@
         android:layout_marginTop="34dp"
         android:textSize="80px" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CHECK ANSWER"
-        android:id="@+id/answerButton"
-        android:layout_marginBottom="92dp"
-        android:textSize="50px"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="checkAnswer"/>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,18 +53,6 @@
         android:layout_below="@+id/wordText"
         android:layout_centerHorizontal="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CONTINUE REVIEW"
-        android:id="@+id/continueReview"
-        android:textSize="50px"
-        android:onClick="continueReview"
-        android:visibility="invisible"
-        android:layout_alignBaseline="@+id/answerButton"
-        android:layout_alignBottom="@+id/answerButton"
-        android:layout_centerHorizontal="true" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -101,5 +78,48 @@
         android:layout_marginTop="23dp"
         android:layout_below="@+id/answerText"
         android:layout_centerHorizontal="true" />
+
+    <CheckBox
+        android:text="View previous errors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/answerField"
+        android:layout_alignStart="@+id/textView2"
+        android:onClick="viewPreviousErrors"
+        android:id="@+id/checkErrors" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CHECK ANSWER"
+        android:id="@+id/answerButton"
+        android:textSize="50px"
+        android:onClick="checkAnswer"
+        android:layout_marginTop="43dp"
+        android:layout_below="@+id/errorsText"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CONTINUE REVIEW"
+        android:id="@+id/continueReview"
+        android:textSize="50px"
+        android:onClick="continueReview"
+        android:visibility="invisible"
+        android:layout_alignBaseline="@+id/answerButton"
+        android:layout_alignBottom="@+id/answerButton"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="No errors to display."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:id="@+id/errorsText"
+        android:textSize="18sp"
+        android:layout_below="@+id/checkErrors"
+        android:layout_alignEnd="@+id/textView2"
+        android:visibility="invisible" />
 
 </RelativeLayout>
