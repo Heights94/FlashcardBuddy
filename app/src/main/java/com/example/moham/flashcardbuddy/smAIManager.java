@@ -119,7 +119,7 @@ public class smAIManager extends SQLiteOpenHelper {
         for (SuperMemo flashcard : rows) {//For each card..
             reviewDate = format.parse(flashcard.getReviewDate());
             Date todaysDate = format.parse(flashcard.getCurrentDate());
-            System.out.println(reviewDate + " " + todaysDate);
+            System.out.println(reviewDate + " TODAY DATE IS " + todaysDate);
             if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
                 sm.add(flashcard);
             }

@@ -121,14 +121,6 @@ public class smActivityTest extends ActivityUnitTestCase<smActivity> {
         }
 
         @Test
-        public void checkAnswerFieldIsEnabled() {
-            onView(withId(R.id.answerButton))
-                    .perform(click());
-            onView(withId(R.id.answerField))
-                    .check(matches(not(isEnabled())));
-        }
-
-        @Test
         public void checkWordCountMatchesWordsForReview() throws ParseException {
             int wordCount = smManager.SuperMemoWordCount();//Word count from the "Words avaliable for review".
             List<SuperMemo> SuperMemoWordList = smManager.todaysWordReviewList();//Gets the list of words due for review.

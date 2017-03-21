@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static org.hamcrest.Matchers.anyOf;
@@ -48,6 +49,26 @@ public class lsManagerTest {
         int count = lsManager.leitnerWordCount();
         assertEquals(1, count++);
         System.out.println("Leitner Count is " + count);
+    }
+
+    /* Only one date should be considered */
+    @Test
+    public void differentDates() throws ParseException {
+        LeitnerSystem currentWord = new LeitnerSystem(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1);
+        DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
+        Calendar c = Calendar.getInstance();
+        c.setTime(format.parse(currentWord.getReviewDate()));
+
+        c.setTimeZone(TimeZone.getTimeZone("GMT"));
+        c.add(Calendar.DATE, 10);  // number of days to add
+
+        String newReviewDate = format.format(c.getTime());  // dt is now the new date
+        System.out.println("New date is " + newReviewDate);
+        currentWord.setReviewDate(newReviewDate);
+
+        dbHandler.addFlashcard(currentWord, "LeitnerSystem");
+        List<LeitnerSystem> ls = lsManager.todaysWordReviewList();
+        assertEquals(ls.size(),1);
     }
 
     /* Need to do this with a new word */

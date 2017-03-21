@@ -23,50 +23,52 @@ import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.*;
 
 /**
- * Created by moham on 06/02/2017.
+ * Created by moham on 20/03/2017.
  */
+
 @RunWith(AndroidJUnit4.class)
-public class lsActivityTest extends ActivityUnitTestCase<lsActivity> {
+public class smAIActivityTest extends ActivityUnitTestCase<smAIActivity> {
 
 
-    public lsActivityTest() {
-        super(lsActivity.class);
+    public smAIActivityTest() {
+        super(smAIActivity.class);
     }
 
-    private lsManager lsManager;
+    private smAIManager smAIManager;
     ;
     /* Instantiate an IntentsTestRule object. */
     @Rule
     public ActivityTestRule mActivityRule = new ActivityTestRule<>(
-            lsActivity.class);
+            smAIActivity.class);
 
     @Before
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
-        lsManager = new lsManager(getTargetContext());
+        smAIManager = new smAIManager(getTargetContext());
     }
 
     @After
     public void tearDown() throws Exception {
-        lsManager.close();
+        smAIManager.close();
     }
 
     @Test
     public void checkWordText() throws Exception {
-        List<LeitnerSystem> rows = lsManager.getLeitnerFlashcards();
-        LeitnerSystem ls = rows.get(0);
+        List<SuperMemo> rows = smAIManager.getSuperMemoFlashcards();
+        SuperMemo sm = rows.get(0);
         String log = "";
-        log = "Id: " + ls.getId()
-                + " ,Word: " + ls.getWord()
-                + " ,WordTranslated: " + ls.getWordTranslated()
-                + " ,Interval: " + ls.getInterval()
-                + " ,Box Number: " + ls.getBoxNumnber()
-                + " ,Date added: " + ls.getDateAdded()
-                + " ,Review date: " + ls.getReviewDate();
+        log = "Id: " + sm.getId()
+                + " ,Word: " + sm.getWord()
+                + " ,WordTranslated: " + sm.getWordTranslated()
+                + " ,Interval: " + sm.getInterval()
+                + " ,Efactor: " + sm.getEFactor()
+                + " ,Date added: " + sm.getDateAdded()
+                + " ,Review date: " + sm.getReviewDate();
         Log.d("Leitner:", log);
-        onView(withId(R.id.wordText)).check(matches(withText(ls.getWordTranslated())));
+        onView(withId(R.id.wordText)).check(matches(withText(sm.getWordTranslated())));
     }
 
     /*@Test
@@ -101,24 +103,22 @@ public class lsActivityTest extends ActivityUnitTestCase<lsActivity> {
 
     @Test
     public void checkAnswerText() throws ParseException {
-        List<LeitnerSystem> rows = lsManager.getLeitnerFlashcards();
-        LeitnerSystem ls = rows.get(0);
-        onView(withId(R.id.answerText)).check(matches(withText(ls.getWord())));
+        List<SuperMemo> rows = smAIManager.getSuperMemoFlashcards();
+        SuperMemo sm = rows.get(0);
+        onView(withId(R.id.answerText)).check(matches(withText(sm.getWord())));
     }
 
     @Test
-    public void checRateAnswerIsVisible() {
+    public void checkContinueReviewIsVisible() {
         onView(withId(R.id.answerButton))
                 .perform(click());
-        onView(withId(R.id.okayButton))
-                .check(matches(isDisplayed()));
-        onView(withId(R.id.difficultButton))
+        onView(withId(R.id.continueReview))
                 .check(matches(isDisplayed()));
         onView(withId(R.id.answerButton))
                 .check(matches(not(isDisplayed())));
     }
 
-    //@Test
+    @Test
     public void checkAnswerFieldIsEnabled() {
         onView(withId(R.id.answerButton))
                 .perform(click());
@@ -128,17 +128,11 @@ public class lsActivityTest extends ActivityUnitTestCase<lsActivity> {
 
     @Test
     public void checkWordCountMatchesWordsForReview() throws ParseException {
-        int wordCount = lsManager.leitnerWordCount();//Word count from the "Words avaliable for review".
-        List<LeitnerSystem> leitnerWordList = lsManager.todaysWordReviewList();//Gets the list of words due for review.
-        assertEquals(wordCount, leitnerWordList.size());//Compares the size of the list of words to the wordCount, should always be equal.
+        int wordCount = smAIManager.SuperMemoWordCount();//Word count from the "Words avaliable for review".
+        List<SuperMemo> SuperMemoWordList = smAIManager.todaysWordReviewList();//Gets the list of words due for review.
+        assertEquals(wordCount, SuperMemoWordList.size());//Compares the size of the list of words to the wordCount, should always be equal.
     }
 
-    @Test
-    public void checkAnswerButtonsAreHidden(){
-        onView(withId(R.id.answerButton))
-                .perform(click());
-        onView(withId(R.id.okayButton))
-                .perform(click());
-    }
+
 
 }

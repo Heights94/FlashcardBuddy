@@ -137,17 +137,17 @@ public class DBHandler extends SQLiteOpenHelper {
         if (TABLE_NAME == "SuperMemo") {
             values.put(KEY_EFACTOR, 2.5f);
             values.put(KEY_DATE_ADDED, SuperMemo.getCurrentDate()); // Flashcard Phone Number
-            values.put(KEY_REVIEW_DATE, SuperMemo.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_REVIEW_DATE, Flashcard.getReviewDate()); // Flashcard Phone Number
             values.put(KEY_QUALITY_OF_RESPONSE, -1); // Has to be -1, since you can rate 0 stars, and on the first review, it's technically an improvement.
         } else if (TABLE_NAME == "LeitnerSystem") {
             System.out.println("The word translated is :" + Flashcard.getWordTranslated());
             values.put(KEY_BOX_NUMBER, 1);
             values.put(KEY_DATE_ADDED, LeitnerSystem.getCurrentDate()); // Flashcard Phone Number
-            values.put(KEY_REVIEW_DATE, LeitnerSystem.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_REVIEW_DATE, Flashcard.getReviewDate()); // Flashcard Phone Number
         } else if (TABLE_NAME == "SuperMemoAI") {
             values.put(KEY_EFACTOR, 2.5f);
             values.put(KEY_DATE_ADDED, SuperMemo.getCurrentDate()); // Flashcard Phone Number
-            values.put(KEY_REVIEW_DATE, SuperMemo.getCurrentDate()); // Flashcard Phone Number
+            values.put(KEY_REVIEW_DATE, Flashcard.getReviewDate()); // Flashcard Phone Number
             values.put(KEY_QUALITY_OF_RESPONSE, -1); // Has to be -1, since you can rate 0 stars, and on the first review, it's technically an improvement.
         }
         values.put(KEY_SPELLING, ""); // Flashcard Phone Number
@@ -323,7 +323,7 @@ public class DBHandler extends SQLiteOpenHelper {
         Flashcard flashcard = new Flashcard();
         if (databaseEmpty("LeitnerSystem")) {
             Log.d("Empty database: ", "Adding data ..");
-            addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, LeitnerSystem.getCurrentDate(), LeitnerSystem.getCurrentDate(), 1), "LeitnerSystem");
+            addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, LeitnerSystem.getCurrentDate(), flashcard.getCurrentDate(), 1), "LeitnerSystem");
             addResults("LeitnerSystem");
             //addFlashcard(new LeitnerSystem(0, "Sore", "That", 0, null, LeitnerSystem.getCurrentDate(), LeitnerSystem.getCurrentDate(), 1), "LeitnerSystem");
         } else {

@@ -37,10 +37,10 @@ public class MainActivity extends AppCompatActivity {
         //db.showAllTables();
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
-       //db.deleteTable("LeitnerSystem", null);
-       // db.deleteTable("SuperMemo",null);
-       // db.deleteTable("SuperMemoAI",null);
-      // db.deleteTable("Results",null);
+       db.deleteTable("LeitnerSystem", null);
+        db.deleteTable("SuperMemo",null);
+        db.deleteTable("SuperMemoAI",null);
+       db.deleteTable("Results",null);
         //  db.getAvaliableCards("LeitnerSystem");
         try {
             db.databaseStatus();
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         view.setText(Integer.toString(totalWordCount));
 
     }
+
     public int smWordsAvaliable() throws ParseException {
         int count = smManager.SuperMemoWordCount();
         System.out.println("Current count is : " + count);
