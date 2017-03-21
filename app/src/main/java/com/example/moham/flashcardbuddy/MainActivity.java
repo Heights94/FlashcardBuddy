@@ -37,10 +37,10 @@ public class MainActivity extends AppCompatActivity {
         //db.showAllTables();
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
-       db.deleteTable("LeitnerSystem", null);
-       db.deleteTable("SuperMemo",null);
-        db.deleteTable("SuperMemoAI",null);
-       db.deleteTable("Results",null);
+       //db.deleteTable("LeitnerSystem", null);
+       //db.deleteTable("SuperMemo",null);
+        //db.deleteTable("SuperMemoAI",null);
+       //db.deleteTable("Results",null);
         //  db.getAvaliableCards("LeitnerSystem");
         try {
             db.databaseStatus();
@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         try {
             //smWordsAvaliable();
+            // lsManager.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
+            smManager.displaySuperMemoWords();
+            smAIManager.displaySuperMemoWords();
             checkWordsAvaliable();
         } catch (ParseException e) {
             e.printStackTrace();
