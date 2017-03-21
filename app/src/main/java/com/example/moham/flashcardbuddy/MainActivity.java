@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
        db.deleteTable("LeitnerSystem", null);
-        db.deleteTable("SuperMemo",null);
+       db.deleteTable("SuperMemo",null);
         db.deleteTable("SuperMemoAI",null);
        db.deleteTable("Results",null);
         //  db.getAvaliableCards("LeitnerSystem");
@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         int lsWordCount = leitnerWordsAvaliable();
         int smAIWordCount = smAIWordsAvaliable();
         int totalWordCount = smWordCount + lsWordCount + smAIWordCount;
+        System.out.println("Total count is + " + totalWordCount);
         Button btn = (Button) findViewById(R.id.start_review);
         if (totalWordCount >= 1 && totalWordCount <= 3) {
             btn.setEnabled(true);

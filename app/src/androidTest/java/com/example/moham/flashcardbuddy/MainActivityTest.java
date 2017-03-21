@@ -37,6 +37,9 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     }
 
     private lsManager lsManager;
+    private smManager smManager;
+    private smAIManager smAIManager;
+
     private DBHandler dbHandler;
     private static final String MESSAGE = "It works!";
     private static final String PACKAGE_NAME = "com.example.moham.flashcardbuddy";
@@ -53,6 +56,11 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
         lsManager = new lsManager(getTargetContext());
         dbHandler = new DBHandler(getTargetContext());
+        try {
+            dbHandler.databaseStatus();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @After
@@ -62,18 +70,12 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
 
     @Test
     public void checkStartReviewIsEnabled() throws ParseException {
-        int count = lsManager.leitnerWordCount();
-        if(count > 0) {
+        int smWordCount = smManager.SuperMemoWordCount();
+        int lsWordCount = lsManager.leitnerWordCount();
+        int smAIWordCount = smAIManager.SuperMemoWordCount();
+        int totalWordCount = smWordCount + lsWordCount + smAIWordCount;
+        if(totalWordCount >= 1 && totalWordCount <= 3) {
             onView(withId(R.id.start_review)).check(matches(isEnabled()));
-        }
-    }
-
-
-    @Test
-    public void checkStartReviewIsNotEnabled() throws ParseException {
-        int count = lsManager.leitnerWordCount();
-        if(count == 0) {
-            onView(withId(R.id.start_review)).check(matches(not(isEnabled())));
         }
     }
 
