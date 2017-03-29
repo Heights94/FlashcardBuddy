@@ -156,7 +156,7 @@ public class lsManager extends SQLiteOpenHelper {
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         Calendar c = Calendar.getInstance();
-        c.setTime(format.parse(ls.getReviewDate()));
+        c.setTime(format.parse(ls.getCurrentDate()));
         int newBoxNumber = 1;
         int newReviewInterval = 0;
         if (answerRating == "okay") {
@@ -175,6 +175,7 @@ public class lsManager extends SQLiteOpenHelper {
             newReviewInterval = nextReviewDate(newBoxNumber, ls);
             c.add(Calendar.DATE, newReviewInterval);
             newReviewDate = format.format(c.getTime());  // dt is now the new date
+            values.put(KEY_INTERVAL, ls.getInterval() + 1);//Reviewed word now, increment times reviewed.
             values.put(KEY_BOX_NUMBER, newBoxNumber);
             values.put(KEY_REVIEW_DATE, newReviewDate);
             //    System.out.println("Updated row:" + newReviewDate);
@@ -193,7 +194,7 @@ public class lsManager extends SQLiteOpenHelper {
         // String dayOfReview = ls.getReviewDate().substring(0, 9).replaceAll("\\s", "");//Gets the day of the last review, removes whitespace.
         DateFormat dayOnly = new SimpleDateFormat("EEEE");
         Calendar c = Calendar.getInstance();
-        c.setTime(dayOnly.parse(ls.getReviewDate()));
+        c.setTime(dayOnly.parse(ls.getCurrentDate()));//Gets the review date, which should be today. But sometimes can go past the review date..
         String newReviewDay = dayOnly.format(c.getTime());  // dt is now the new date
         //System.out.println(dayOfReview + boxNumber);
         int daysAdded = 2;
@@ -234,22 +235,22 @@ public class lsManager extends SQLiteOpenHelper {
             case 5://Once a week
                 if (newReviewDay.equals("Monday")) {
                     daysAdded = 7;//Repeat review on Wednesday, 1 day later.
-                    //System.out.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
+                    System.out.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
                 } else if (newReviewDay.equals("Tuesday")) {
                     daysAdded = 6;//Start review next Monday.
-                    //System.ou.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
+                    System.out.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
                 } else if (newReviewDay.equals("Wednesday")) {
                     daysAdded = 5;//Start review next Monday.
-                    //System.ou.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
+                    System.out.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
                 } else if (newReviewDay.equals("Thursday")) {
                     daysAdded = 4;//Start review next Monday.
-                    //System.ou.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
+                    System.out.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
                 } else if (newReviewDay.equals("Friday")) {
                     daysAdded = 3;//Start review next Monday.
-                    //System.ou.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
+                    System.out.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
                 } else if (newReviewDay.equals("Sunday")) {
                     daysAdded = 1;//Start review next Monday.
-                    //System.ou.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
+                    System.out.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
                 }
                // System.out.println("IF3: Days added is " + daysAdded + " to " + newReviewDay);
 

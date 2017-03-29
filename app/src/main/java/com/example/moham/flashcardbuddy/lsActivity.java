@@ -80,7 +80,7 @@ public class lsActivity extends AppCompatActivity {
             hideAnswer();
             LeitnerSystem ls = rows.get(0);
             db.updateLeitnerWord(ls, "okay");
-            dbHandler.updateResults("LeitnerSystem", "Okay", ls.getInterval() + 1, ls.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
+            dbHandler.updateResults("LeitnerSystem", "Okay", ls.getCurrentInterval() + 1, ls.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
             if (smManager.SuperMemoWordCount() > 0) {
                 Intent intent = new Intent(this, smActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -104,7 +104,7 @@ public class lsActivity extends AppCompatActivity {
             hideAnswer();
             LeitnerSystem ls = rows.get(0);
             db.updateLeitnerWord(ls, "difficult");
-            dbHandler.updateResults("LeitnerSystem", "Difficult", ls.getInterval() + 1, ls.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
+            dbHandler.updateResults("LeitnerSystem", "Difficult", ls.getCurrentInterval() + 1, ls.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
             if (smManager.SuperMemoWordCount() > 0) {
                 Intent intent = new Intent(this, smActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

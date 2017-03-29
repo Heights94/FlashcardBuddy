@@ -54,6 +54,8 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     @Before
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
+        smManager = new smManager(getTargetContext());
+        smAIManager = new smAIManager(getTargetContext());
         lsManager = new lsManager(getTargetContext());
         dbHandler = new DBHandler(getTargetContext());
         try {

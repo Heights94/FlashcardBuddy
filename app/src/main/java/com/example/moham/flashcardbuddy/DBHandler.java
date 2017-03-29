@@ -189,7 +189,7 @@ public class DBHandler extends SQLiteOpenHelper {
             if (answerType == "Okay") {
                 successfulAnswer = 1;
             } else if (answerType == "Difficult") {
-                successfulAnswer = -1;
+                //successfulAnswer = -1;
             }
         }
 
@@ -198,7 +198,7 @@ public class DBHandler extends SQLiteOpenHelper {
             if (Integer.parseInt(answerType) > qualityOfResponse) {//There's an improvement, rating vs previousRating
                 successfulAnswer = 1;
             } else if (Integer.parseInt(answerType) < qualityOfResponse) {
-                successfulAnswer = -1;
+            //    successfulAnswer = -1;
             } else if (Integer.parseInt(answerType) == qualityOfResponse) {
                 successfulAnswer = 0;
             }
@@ -223,7 +223,7 @@ public class DBHandler extends SQLiteOpenHelper {
         double successRate = (successCount * 100 / currentInterval);//successCount is basically subtracts the fail count.
    //     if (currentInterval ==) {
             values.put(KEY_SUCCESS_COUNT, successCount);
-        System.out.println("Updating interval to " + currentInterval + " id is " + id);
+        System.out.println("Updating interval to " + currentInterval + " id is " + id + " success count is " + successCount);
             values.put(KEY_CURRENT_INTERVAL, currentInterval);
             values.put(KEY_SUCCESS_RATE, successRate);
             db.update("Results", values, "id=" + id, null);
