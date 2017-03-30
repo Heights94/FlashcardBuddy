@@ -144,6 +144,8 @@ public class smAIActivity extends AppCompatActivity {
     public void continueReview(View view) throws ParseException {
         //RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         //int rating = (int) ratingBar.getRating();//Will always be a whole number.
+        List<Flashcard> rows = dbHandler.getFlashcardResult("SuperMemoAI");//Get's updated results
+        Flashcard fc = rows.get(0);//Stores within flashcard object.
         int previousRating = currentWord.getQualityOfResponse();
         int newInterval = currentWord.getNextInterval(currentWord.getInterval() + 1);//Uses previous EF value, EF value decreases the harder to remember. Needs to increment the interval by 1 as a review has been just completed.
         currentWord.setInterval(newInterval);
@@ -154,7 +156,7 @@ public class smAIActivity extends AppCompatActivity {
         currentWord.setSpelling(spelling);
         currentWord.setEFactor(newEF);
         smAIManager.updateSuperMemoWord(currentWord);
-        dbHandler.updateResults("SuperMemoAI", Integer.toString(rating), currentWord.getInterval(), currentWord.getSuccessCount(), previousRating);
+        dbHandler.updateResults("SuperMemoAI", Integer.toString(rating), fc.getCurrentInterval() + 1, fc.getSuccessCount(), previousRating);
         if (lsManager.leitnerWordCount() > 0) { // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, lsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

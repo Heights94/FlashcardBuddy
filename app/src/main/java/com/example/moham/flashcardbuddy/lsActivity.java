@@ -79,8 +79,10 @@ public class lsActivity extends AppCompatActivity {
         try {
             hideAnswer();
             LeitnerSystem ls = rows.get(0);
+            List<Flashcard> rows = dbHandler.getFlashcardResult("LeitnerSystem");//Get's updated results
+            Flashcard fc = rows.get(0);//Stores within flashcard object.
             db.updateLeitnerWord(ls, "okay");
-            dbHandler.updateResults("LeitnerSystem", "Okay", ls.getCurrentInterval() + 1, ls.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
+            dbHandler.updateResults("LeitnerSystem", "Okay", fc.getCurrentInterval() + 1, fc.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
             if (smManager.SuperMemoWordCount() > 0) {
                 Intent intent = new Intent(this, smActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -103,8 +105,10 @@ public class lsActivity extends AppCompatActivity {
         try {
             hideAnswer();
             LeitnerSystem ls = rows.get(0);
+            List<Flashcard> rows = dbHandler.getFlashcardResults();//Get's updated results
+            Flashcard fc = rows.get(0);//Stores within flashcard object.
             db.updateLeitnerWord(ls, "difficult");
-            dbHandler.updateResults("LeitnerSystem", "Difficult", ls.getCurrentInterval() + 1, ls.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
+            dbHandler.updateResults("LeitnerSystem", "Difficult", fc.getCurrentInterval() + 1, fc.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
             if (smManager.SuperMemoWordCount() > 0) {
                 Intent intent = new Intent(this, smActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

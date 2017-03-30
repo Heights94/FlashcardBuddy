@@ -37,21 +37,22 @@ public class MainActivity extends AppCompatActivity {
         //db.showAllTables();
         // db.addFlashcard(new LeitnerSystem(2, "Kore", 4, 1), "LeitnerSystem");
 
-      // db.deleteTable("LeitnerSystem", null);
-     //  db.deleteTable("SuperMemo",null);
-     //   db.deleteTable("SuperMemoAI",null);
-    //   db.deleteTable("Results",null);
+       db.deleteTable("LeitnerSystem", null);
+       db.deleteTable("SuperMemo",null);
+       db.deleteTable("SuperMemoAI",null);
+       db.deleteTable("Results",null);
         //  db.getAvaliableCards("LeitnerSystem");
+
         try {
             db.databaseStatus();
         } catch (ParseException e) {
             e.printStackTrace();
         }
         // smManager.displaySuperMemoWords();//Select statement which prints all SuperMemo data to the console.
-        lsManager.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
-        smManager.displaySuperMemoWords();
-        smAIManager.displaySuperMemoWords();
-       db.displayFlashcards();
+      //  lsManager.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
+    //    smManager.displaySuperMemoWords();
+     //   smAIManager.displaySuperMemoWords();
+      // db.displayFlashcards();
         try {
             checkWordsAvaliable();
         } catch (ParseException e) {
@@ -76,9 +77,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         try {
             //smWordsAvaliable();
-            // lsManager.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
+            lsManager.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
             smManager.displaySuperMemoWords();
             smAIManager.displaySuperMemoWords();
+            db.testReviewDate(1, "LeitnerSystem");
+            db.testReviewDate(1, "SuperMemo");
+            db.testReviewDate(1, "SuperMemoAI");
             checkWordsAvaliable();
         } catch (ParseException e) {
             e.printStackTrace();
@@ -151,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
     }
+
+
 
 
 }

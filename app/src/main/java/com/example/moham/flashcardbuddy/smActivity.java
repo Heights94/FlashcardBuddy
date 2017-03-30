@@ -68,17 +68,19 @@ public class smActivity extends AppCompatActivity {
     }
 
     public void submitRating(View view) throws ParseException {
+        List<Flashcard> rows = dbHandler.getFlashcardResult("SuperMemo");//Get's updated results
+        Flashcard fc = rows.get(0);//Stores within flashcard object.
         RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         int rating = (int) ratingBar.getRating();//Will always be a whole number.
         int previousRating = currentWord.getQualityOfResponse();
         int newInterval = currentWord.getNextInterval(currentWord.getInterval() + 1);//Uses previous EF value, EF value decreases the harder to remember. Needs to increment the interval by 1 as a review has been just completed.
-        currentWord.setInterval(newInterval);
+        //currentWord.setInterval(newInterval);
         currentWord.setQualityOfResponse(rating);//Now independent of updateResults, can set because we have the variable previousRating.
         double newEF = currentWord.getNewEFactor();//After each response is made
         System.out.println("Efactor is " + newEF + "Old efactor is " + currentWord.getEFactor());
         currentWord.setEFactor(newEF);
-        smManager.updateSuperMemoWord(currentWord);
-        dbHandler.updateResults("SuperMemo", Integer.toString(rating), currentWord.getInterval(), currentWord.getSuccessCount(), previousRating);
+        smManager.updateSuperMemoWord(currentWord, newInterval);
+        dbHandler.updateResults("SuperMemo", Integer.toString(rating), fc.getCurrentInterval() + 1, fc.getSuccessCount(), previousRating);
         if (lsManager.leitnerWordCount() > 0) { // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, lsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

@@ -146,7 +146,7 @@ public class smManager extends SQLiteOpenHelper {
         return count;
     }
 
-    public void updateSuperMemoWord(SuperMemo sm) throws ParseException {
+    public void updateSuperMemoWord(SuperMemo sm, int newReviewInterval) throws ParseException {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         String newReviewDate = "";
@@ -155,11 +155,11 @@ public class smManager extends SQLiteOpenHelper {
         Calendar c = Calendar.getInstance();
         c.setTime(format.parse(sm.getReviewDate()));
         int newBoxNumber = 1;
-        int newReviewInterval = sm.getInterval();
+     //   int newReviewInterval = sm.getInterval();
 
         c.add(Calendar.DATE, newReviewInterval);
         newReviewDate = format.format(c.getTime());  // dt is now the new date
-        values.put(KEY_INTERVAL, sm.getInterval());//Reviewed word now, increment times reviewed.
+        values.put(KEY_INTERVAL, sm.getInterval() + 1);//Reviewed word now, increment times reviewed.
         //System.out.println("Efactor here is " + sm.getEFactor());
         values.put(KEY_EFACTOR, sm.getEFactor());
         values.put(KEY_QUALITY_OF_RESPONSE, sm.getQualityOfResponse());
@@ -168,4 +168,6 @@ public class smManager extends SQLiteOpenHelper {
         //    System.out.println("Row ID is :" + ls.getId());
         db.update("SuperMemo", values, "id=" + sm.getId(), null);
     }
+
+
 }

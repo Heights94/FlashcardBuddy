@@ -126,6 +126,34 @@ public class DBHandler extends SQLiteOpenHelper {
         return FlashcardList;
     }
 
+    public List<Flashcard> getFlashcardResult(String algorithmName) throws ParseException {
+        List<Flashcard> FlashcardList = new ArrayList<Flashcard>();
+        DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+// Select All Query
+        String selectQuery = "SELECT * FROM Results WHERE algorithmName='" + algorithmName + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+// looping through all rows and add
+// ng to list
+        if (cursor.moveToFirst()) {
+            do {
+                Flashcard fc = new Flashcard();
+                fc.setId(Integer.parseInt(cursor.getString(0)));
+                fc.setAlgorithmName(cursor.getString(1));
+                fc.setSuccessCount(Integer.parseInt(cursor.getString(2)));
+                fc.setCurrentInterval(Integer.parseInt(cursor.getString(3)));
+                fc.setSuccessRate(Double.parseDouble(cursor.getString(4)));
+                fc.setStartDate(cursor.getString(5));
+                fc.setEndDate(cursor.getString(6));
+                FlashcardList.add(fc);
+            } while (cursor.moveToNext());
+        }
+
+// return contact list
+        return FlashcardList;
+    }
+
 
     // Adding new Flashcard
     public void addFlashcard(Flashcard Flashcard, String TABLE_NAME) {
@@ -195,7 +223,8 @@ public class DBHandler extends SQLiteOpenHelper {
 
         if (algorithmName == "SuperMemo") {
             id = 2;
-            if (Integer.parseInt(answerType) > qualityOfResponse) {//There's an improvement, rating vs previousRating
+            System.out.println("The answerType is " + answerType + " Quality " + qualityOfResponse);
+            if (Integer.parseInt(answerType) > qualityOfResponse || Integer.parseInt(answerType) == 5) {//There's an improvement, rating vs previousRating
                 successfulAnswer = 1;
             } else if (Integer.parseInt(answerType) < qualityOfResponse) {
             //    successfulAnswer = -1;
@@ -207,10 +236,10 @@ public class DBHandler extends SQLiteOpenHelper {
         if (algorithmName == "SuperMemoAI") {
             System.out.println("The answerType is " + answerType + " Quality " + qualityOfResponse);
             id = 3;
-            if (Integer.parseInt(answerType) > qualityOfResponse) {//There's an improvement, rating vs previousRating
+            if (Integer.parseInt(answerType) > qualityOfResponse || Integer.parseInt(answerType) == 5) {//There's an improvement, rating vs previousRating
                 successfulAnswer = 1;
             } else if (Integer.parseInt(answerType) < qualityOfResponse) {
-                successfulAnswer = -1;
+              //  successfulAnswer = -1;
             } else if (Integer.parseInt(answerType) == qualityOfResponse) {
                 successfulAnswer = 0;
             }
@@ -226,7 +255,7 @@ public class DBHandler extends SQLiteOpenHelper {
         System.out.println("Updating interval to " + currentInterval + " id is " + id + " success count is " + successCount);
             values.put(KEY_CURRENT_INTERVAL, currentInterval);
             values.put(KEY_SUCCESS_RATE, successRate);
-            db.update("Results", values, "id=" + id, null);
+            db.update("Results", values, "algorithmName='" + algorithmName + "'", null);
        // }
     }
 
@@ -384,6 +413,15 @@ public class DBHandler extends SQLiteOpenHelper {
     public void dropTable(String TABLE_NAME) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE " + TABLE_NAME);
+    }
+
+    public void testReviewDate(int id, String TABLE_NAME) throws ParseException {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_REVIEW_DATE, SuperMemo.getCurrentDate());
+        //    System.out.println("Updated row:" + newReviewDate);
+        //    System.out.println("Row ID is :" + ls.getId());
+        db.update(TABLE_NAME, values, "id=" + id, null);
     }
 }
 
