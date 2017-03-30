@@ -81,7 +81,7 @@ public class smAIActivity extends AppCompatActivity {
                     spelling = spelling + "_";//Display the incorrect character
                 }
             }
-            spelling = "Letters left blank are _, the incorrect letters are uncensored: " + spelling;
+            spelling = "Blank letters = _ . Correct characters = * . \n You last spelt: " + spelling;
         }
         return  spelling;
     }
