@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
@@ -36,6 +37,7 @@ public class lsActivityTest extends ActivityUnitTestCase<lsActivity> {
     }
 
     private lsManager lsManager;
+    private DBHandler dbHandler;
     ;
     /* Instantiate an IntentsTestRule object. */
     @Rule
@@ -46,6 +48,7 @@ public class lsActivityTest extends ActivityUnitTestCase<lsActivity> {
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
         lsManager = new lsManager(getTargetContext());
+        dbHandler = new DBHandler(getTargetContext());
     }
 
     @After
@@ -128,8 +131,9 @@ public class lsActivityTest extends ActivityUnitTestCase<lsActivity> {
 
     @Test
     public void checkWordCountMatchesWordsForReview() throws ParseException {
-        int wordCount = lsManager.leitnerWordCount();//Word count from the "Words avaliable for review".
-        List<LeitnerSystem> leitnerWordList = lsManager.todaysWordReviewList();//Gets the list of words due for review.
+        Date endDate = dbHandler.checkEndDate("LeitnerSystem");
+        int wordCount = lsManager.leitnerWordCount(endDate);//Word count from the "Words avaliable for review".
+        List<LeitnerSystem> leitnerWordList = lsManager.todaysWordReviewList(endDate);//Gets the list of words due for review.
         assertEquals(wordCount, leitnerWordList.size());//Compares the size of the list of words to the wordCount, should always be equal.
     }
 

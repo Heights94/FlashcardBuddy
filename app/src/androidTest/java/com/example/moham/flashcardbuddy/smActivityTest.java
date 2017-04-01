@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
@@ -38,6 +39,8 @@ public class smActivityTest extends ActivityUnitTestCase<smActivity> {
         }
 
         private smManager smManager;
+        private DBHandler dbHandler;
+        private Date endDate;
         ;
         /* Instantiate an IntentsTestRule object. */
         @Rule
@@ -47,7 +50,9 @@ public class smActivityTest extends ActivityUnitTestCase<smActivity> {
         @Before
         public void setUp() throws Exception {
             // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
+            dbHandler = new DBHandler(getTargetContext());
             smManager = new smManager(getTargetContext());
+            endDate = dbHandler.checkEndDate("SuperMemo");
         }
 
         @After
@@ -122,8 +127,8 @@ public class smActivityTest extends ActivityUnitTestCase<smActivity> {
 
         @Test
         public void checkWordCountMatchesWordsForReview() throws ParseException {
-            int wordCount = smManager.SuperMemoWordCount();//Word count from the "Words avaliable for review".
-            List<SuperMemo> SuperMemoWordList = smManager.todaysWordReviewList();//Gets the list of words due for review.
+            int wordCount = smManager.SuperMemoWordCount(endDate);//Word count from the "Words avaliable for review".
+            List<SuperMemo> SuperMemoWordList = smManager.todaysWordReviewList(endDate);//Gets the list of words due for review.
             assertEquals(wordCount, SuperMemoWordList.size());//Compares the size of the list of words to the wordCount, should always be equal.
         }
 

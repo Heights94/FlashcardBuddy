@@ -43,6 +43,7 @@ public class DBHandlerTest {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
         dbHandler = new DBHandler(getTargetContext());
         dbHandler.deleteTable("LeitnerSystem", null);
+        dbHandler.deleteTable("SuperMemoAI", null);
         dbHandler.deleteTable("SuperMemo", null);
         dbHandler.deleteTable("Results", null);
         dbHandler.addFlashcard(new LeitnerSystem(0, "Kore", "This", 0, null, Flashcard.getCurrentDate(), Flashcard.getCurrentDate(), 1), "LeitnerSystem");

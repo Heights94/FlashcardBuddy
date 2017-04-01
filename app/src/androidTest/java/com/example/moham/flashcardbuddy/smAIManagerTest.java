@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -28,7 +29,8 @@ public class smAIManagerTest {
 
     private DBHandler dbHandler;
     //private smManager smManager;
-    private smAIManager smAIManager;
+    private smAIManager smAIManager;;
+    private Date endDate;
 
 
 
@@ -41,6 +43,7 @@ public class smAIManagerTest {
         dbHandler.deleteTable("Results", null);
         dbHandler.addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), SuperMemo.getCurrentDate(), 2.5f, 0), "SuperMemoAI");
         dbHandler.addResults("SuperMemoAI");
+        endDate = dbHandler.checkEndDate("SuperMemoAI");
     }
 
     @After
@@ -51,7 +54,7 @@ public class smAIManagerTest {
 
     @Test
     public void smWordsAvaliableForReview() throws ParseException {
-        int count = smAIManager.SuperMemoWordCount();
+        int count = smAIManager.SuperMemoWordCount(endDate);
         assertEquals(1, count++);
         System.out.println("SuperMemo Count is " + count);
     }
@@ -102,7 +105,7 @@ public class smAIManagerTest {
         currentWord.setReviewDate(newReviewDate);
 
         dbHandler.addFlashcard(currentWord, "SuperMemoAI");
-        List<SuperMemo> sm = smAIManager.todaysWordReviewList();
+        List<SuperMemo> sm = smAIManager.todaysWordReviewList(endDate);
         assertEquals(sm.size(),1);
     }
 
@@ -110,25 +113,25 @@ public class smAIManagerTest {
     public void ratingAnswer() throws ParseException {
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
         String newReviewDate = "";
-        List<SuperMemo> rows = smAIManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<SuperMemo> rows = smAIManager.todaysWordReviewList(endDate);//Won't work, has if condition. But one word should show still.
         SuperMemo sm = rows.get(0); //Original data, first card.
 
         int previousRating = sm.getQualityOfResponse();
         int rating = 3;
         sm.setQualityOfResponse(rating);
         int newInterval = sm.getNextInterval(sm.getInterval() + 1);// Needs to increment the interval by 1 as a review has been just completed.
-        sm.setInterval(newInterval);
+        //sm.setInterval(newInterval);
         double newEF = sm.getNewEFactor();//After each response is made
         sm.setEFactor(newEF);
 
         Calendar c = Calendar.getInstance();
-        smAIManager.updateSuperMemoWord(sm);
+        smAIManager.updateSuperMemoWord(sm, newInterval);
         dbHandler.updateResults("SuperMemo", Integer.toString(rating), sm.getInterval() + 1,sm.getSuccessCount(),previousRating);
 
         List<SuperMemo> rows2 = smAIManager.getSuperMemoFlashcards();
         SuperMemo sm2 = rows2.get(0);//Updated data
         c.setTime(format.parse(sm.getReviewDate()));
-        c.add(Calendar.DATE, sm.getInterval());  // number of days to add
+        c.add(Calendar.DATE, newInterval);  // number of days to add
         newReviewDate = format.format(c.getTime());  // dt is now the new date
         assertEquals(newReviewDate,sm2.getReviewDate());
         assertEquals(newInterval, sm2.getInterval());//Interval before, vs interval after update. Also checks if sm.setInterval works.
@@ -140,25 +143,25 @@ public class smAIManagerTest {
     public void ratingAnswer2() throws ParseException {
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
         String newReviewDate = "";
-        List<SuperMemo> rows = smAIManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<SuperMemo> rows = smAIManager.todaysWordReviewList(endDate);//Won't work, has if condition. But one word should show still.
         SuperMemo sm = rows.get(0); //Original data, first card.
 
         int previousRating = sm.getQualityOfResponse();
         int rating = 4;
         sm.setQualityOfResponse(rating);
         int newInterval = sm.getNextInterval(sm.getInterval() + 1);// Needs to increment the interval by 1 as a review has been just completed.
-        sm.setInterval(newInterval);
+        //sm.setInterval(newInterval);
         double newEF = sm.getNewEFactor();//After each response is made
         sm.setEFactor(newEF);
 
         Calendar c = Calendar.getInstance();
-        smAIManager.updateSuperMemoWord(sm);
+        smAIManager.updateSuperMemoWord(sm,newInterval);
         dbHandler.updateResults("SuperMemo", Integer.toString(rating), sm.getInterval() + 1,sm.getSuccessCount(),previousRating);
 
         List<SuperMemo> rows2 = smAIManager.getSuperMemoFlashcards();
         SuperMemo sm2 = rows2.get(0);//Updated data
         c.setTime(format.parse(sm.getReviewDate()));
-        c.add(Calendar.DATE, sm.getInterval());  // number of days to add
+        c.add(Calendar.DATE, newInterval);  // number of days to add
         newReviewDate = format.format(c.getTime());  // dt is now the new date
         assertEquals(newReviewDate,sm2.getReviewDate());
         assertEquals(newInterval, sm2.getInterval());//Interval before, vs interval after update. Also checks if sm.setInterval works.
@@ -170,7 +173,7 @@ public class smAIManagerTest {
     public void ratingAnswer3() throws ParseException {
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
         String newReviewDate = "";
-        List<SuperMemo> rows = smAIManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<SuperMemo> rows = smAIManager.todaysWordReviewList(endDate);//Won't work, has if condition. But one word should show still.
         SuperMemo sm = rows.get(0); //Original data, first card.
 
         int previousRating = sm.getQualityOfResponse();
@@ -178,18 +181,18 @@ public class smAIManagerTest {
         sm.setEFactor(2.36);
         sm.setQualityOfResponse(rating);
         int newInterval = sm.getNextInterval(sm.getInterval() + 1);// Needs to increment the interval by 1 as a review has been just completed.
-        sm.setInterval(newInterval);
+       // sm.setInterval(newInterval);
         double newEF = sm.getNewEFactor();//After each response is made
         sm.setEFactor(newEF);
 
         Calendar c = Calendar.getInstance();
-        smAIManager.updateSuperMemoWord(sm);
+        smAIManager.updateSuperMemoWord(sm,newInterval);
         dbHandler.updateResults("SuperMemo", Integer.toString(rating), sm.getInterval() + 1,sm.getSuccessCount(),previousRating);
 
         List<SuperMemo> rows2 = smAIManager.getSuperMemoFlashcards();
         SuperMemo sm2 = rows2.get(0);//Updated data
         c.setTime(format.parse(sm.getReviewDate()));
-        c.add(Calendar.DATE, sm.getInterval());  // number of days to add
+        c.add(Calendar.DATE, newInterval);  // number of days to add
         newReviewDate = format.format(c.getTime());  // dt is now the new date
         assertEquals(newReviewDate,sm2.getReviewDate());
         assertEquals(newInterval, sm2.getInterval());//Interval before, vs interval after update. Also checks if sm.setInterval works.

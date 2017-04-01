@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
@@ -38,6 +39,8 @@ public class smAIActivityTest extends ActivityUnitTestCase<smAIActivity> {
     }
 
     private smAIManager smAIManager;
+    private DBHandler dbHandler;
+    private Date endDate;
     ;
     /* Instantiate an IntentsTestRule object. */
     @Rule
@@ -48,6 +51,8 @@ public class smAIActivityTest extends ActivityUnitTestCase<smAIActivity> {
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
         smAIManager = new smAIManager(getTargetContext());
+        dbHandler = new DBHandler(getTargetContext());
+        endDate = dbHandler.checkEndDate("SuperMemoAI");
     }
 
     @After
@@ -128,8 +133,8 @@ public class smAIActivityTest extends ActivityUnitTestCase<smAIActivity> {
 
     @Test
     public void checkWordCountMatchesWordsForReview() throws ParseException {
-        int wordCount = smAIManager.SuperMemoWordCount();//Word count from the "Words avaliable for review".
-        List<SuperMemo> SuperMemoWordList = smAIManager.todaysWordReviewList();//Gets the list of words due for review.
+        int wordCount = smAIManager.SuperMemoWordCount(endDate);//Word count from the "Words avaliable for review".
+        List<SuperMemo> SuperMemoWordList = smAIManager.todaysWordReviewList(endDate);//Gets the list of words due for review.
         assertEquals(wordCount, SuperMemoWordList.size());//Compares the size of the list of words to the wordCount, should always be equal.
     }
 

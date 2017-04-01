@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -29,12 +30,14 @@ public class lsManagerTest {
 
     private DBHandler dbHandler;
     private lsManager lsManager;
+    private Date endDate;
 
 
     @Before
     public void setUp() throws Exception {
         // getTargetContext().deleteDatabase(dbHandler.DATABASE_NAME);
         dbHandler = new DBHandler(getTargetContext());
+        endDate = dbHandler.checkEndDate("LeitnerSystem");
         lsManager = new lsManager(getTargetContext());
         dbHandler.deleteTable("LeitnerSystem", null);
         dbHandler.deleteTable("Results", null);
@@ -44,12 +47,13 @@ public class lsManagerTest {
 
     @After
     public void tearDown() throws Exception {
+        lsManager.close();
         dbHandler.close();
     }
 
     @Test
     public void lsWordsAvaliableForReview() throws ParseException {
-        int count = lsManager.leitnerWordCount();
+        int count = lsManager.leitnerWordCount(endDate);
         assertEquals(1, count++);
         System.out.println("Leitner Count is " + count);
     }
@@ -70,7 +74,7 @@ public class lsManagerTest {
         currentWord.setReviewDate(newReviewDate);
 
         dbHandler.addFlashcard(currentWord, "LeitnerSystem");
-        List<LeitnerSystem> ls = lsManager.todaysWordReviewList();
+        List<LeitnerSystem> ls = lsManager.todaysWordReviewList(endDate);
         assertEquals(ls.size(), 1);
     }
 
@@ -79,7 +83,7 @@ public class lsManagerTest {
     public void wordIsRatedGood() throws ParseException {
         DateFormat dayOnly = new SimpleDateFormat("EEEE");
         String newReviewDay = "";
-        List<LeitnerSystem> rows = lsManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<LeitnerSystem> rows = lsManager.todaysWordReviewList(endDate);//Won't work, has if condition. But one word should show still.
         LeitnerSystem ls = rows.get(0); //Original data, first card.
 
         Calendar c = Calendar.getInstance();
@@ -99,7 +103,7 @@ public class lsManagerTest {
     public void wordIsRatedDifficult() throws ParseException {
         DateFormat dayOnly = new SimpleDateFormat("EEEE");
         String newReviewDay = "";
-        List<LeitnerSystem> rows = lsManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<LeitnerSystem> rows = lsManager.todaysWordReviewList(endDate);//Won't work, has if condition. But one word should show still.
         LeitnerSystem ls = rows.get(0); //Original data, first card.
 
         Calendar c = Calendar.getInstance();

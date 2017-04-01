@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Date;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
@@ -39,6 +40,10 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     private lsManager lsManager;
     private smManager smManager;
     private smAIManager smAIManager;
+    private Date endDateLS;
+    private Date endDateSM;
+    private Date endDateSMAI;
+
 
     private DBHandler dbHandler;
     private static final String MESSAGE = "It works!";
@@ -57,7 +62,15 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
         smManager = new smManager(getTargetContext());
         smAIManager = new smAIManager(getTargetContext());
         lsManager = new lsManager(getTargetContext());
-        dbHandler = new DBHandler(getTargetContext());
+        dbHandler = new DBHandler(getTargetContext());    //db.deleteTable("LeitnerSystem", null);
+        endDateLS = dbHandler.checkEndDate("LeitnerSystem");
+        endDateSM = dbHandler.checkEndDate("SuperMemo");
+        endDateSMAI = dbHandler.checkEndDate("SuperMemoAI");
+        dbHandler.deleteTable("LeitnerSystem", null);
+        dbHandler.deleteTable("SuperMemo",null);
+        dbHandler.deleteTable("SuperMemoAI",null);
+        dbHandler.deleteTable("Results",null);
+
         try {
             dbHandler.databaseStatus();
         } catch (ParseException e) {
@@ -68,20 +81,24 @@ public class MainActivityTest extends ActivityUnitTestCase<MainActivity> {
     @After
     public void tearDown() throws Exception {
         lsManager.close();
+        smManager.close();
+        smAIManager.close();
+        dbHandler.close();
     }
 
     @Test
     public void checkStartReviewIsEnabled() throws ParseException {
-        int smWordCount = smManager.SuperMemoWordCount();
-        int lsWordCount = lsManager.leitnerWordCount();
-        int smAIWordCount = smAIManager.SuperMemoWordCount();
+        int smWordCount = smManager.SuperMemoWordCount(endDateSM);
+        int lsWordCount = lsManager.leitnerWordCount(endDateLS);
+        int smAIWordCount = smAIManager.SuperMemoWordCount(endDateSMAI);
         int totalWordCount = smWordCount + lsWordCount + smAIWordCount;
         if(totalWordCount >= 1 && totalWordCount <= 3) {
             onView(withId(R.id.start_review)).check(matches(isEnabled()));
         }
     }
 
-    @Test
+
+   /// @Test
     public void testOpenActivity() {
         // Types a message into a EditText element.
 

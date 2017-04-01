@@ -29,6 +29,7 @@ public class smManagerTest {
 
     private DBHandler dbHandler;
     private smManager smManager;
+    private Date endDate;
 
 
     @Before
@@ -38,8 +39,9 @@ public class smManagerTest {
         smManager = new smManager(getTargetContext());
         dbHandler.deleteTable("SuperMemo", null);
         dbHandler.deleteTable("Results", null);
-        dbHandler.addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, Flashcard.getCurrentDate(), SuperMemo.getCurrentDate(), 2.5f, -1), "SuperMemo");
+        dbHandler.addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, SuperMemo.getCurrentDate(), SuperMemo.getCurrentDate(), 2.5f, -1), "SuperMemo");
         dbHandler.addResults("SuperMemo");
+        endDate = dbHandler.checkEndDate("SuperMemo");
     }
 
     @After
@@ -50,7 +52,7 @@ public class smManagerTest {
 
     @Test
     public void smWordsAvaliableForReview() throws ParseException {
-        int count = smManager.SuperMemoWordCount();
+        int count = smManager.SuperMemoWordCount(endDate);
         assertEquals(1, count++);
         System.out.println("SuperMemo Count is " + count);
     }
@@ -101,7 +103,7 @@ public class smManagerTest {
         currentWord.setReviewDate(newReviewDate);
 
         dbHandler.addFlashcard(currentWord, "SuperMemo");
-        List<SuperMemo> sm = smManager.todaysWordReviewList();
+        List<SuperMemo> sm = smManager.todaysWordReviewList(endDate);
         assertEquals(sm.size(),1);
     }
 
@@ -109,7 +111,7 @@ public class smManagerTest {
     public void ratingAnswer() throws ParseException {
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
         String newReviewDate = "";
-        List<SuperMemo> rows = smManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<SuperMemo> rows = smManager.todaysWordReviewList(endDate);//Won't work, has if condition. But one word should show still.
         SuperMemo sm = rows.get(0); //Original data, first card.
 
         int rating = 3;
@@ -139,7 +141,7 @@ public class smManagerTest {
     public void ratingAnswer2() throws ParseException {
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
         String newReviewDate = "";
-        List<SuperMemo> rows = smManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<SuperMemo> rows = smManager.todaysWordReviewList(endDate);//Won't work, has if condition. But one word should show still.
         SuperMemo sm = rows.get(0); //Original data, first card.
 
         int rating = 4;
@@ -169,7 +171,7 @@ public class smManagerTest {
     public void ratingAnswer3() throws ParseException {
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
         String newReviewDate = "";
-        List<SuperMemo> rows = smManager.todaysWordReviewList();//Won't work, has if condition. But one word should show still.
+        List<SuperMemo> rows = smManager.todaysWordReviewList(endDate);//Won't work, has if condition. But one word should show still.
         SuperMemo sm = rows.get(0); //Original data, first card.
 
         int rating = 4;
