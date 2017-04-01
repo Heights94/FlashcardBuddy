@@ -109,7 +109,7 @@ public class smManager extends SQLiteOpenHelper {
         }
     }
 
-    public List<SuperMemo> todaysWordReviewList() throws ParseException {
+    public List<SuperMemo> todaysWordReviewList(Date endDate) throws ParseException {
         List<SuperMemo> rows = getSuperMemoFlashcards();//Returns 0
         List<SuperMemo> sm = new ArrayList<>();
         //System.out.println(rows.size());
@@ -120,7 +120,7 @@ public class smManager extends SQLiteOpenHelper {
             reviewDate = format.parse(flashcard.getReviewDate());
             Date todaysDate = format.parse(flashcard.getCurrentDate());
             System.out.println(reviewDate + " " + todaysDate);
-            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate) && !endDate.equals(SuperMemo.getCurrentDate()) && format.parse(SuperMemo.getCurrentDate()).before(endDate)) {//If today is the review day
                 sm.add(flashcard);
             }
             // System.out.println(flashcard.getWord() + " ls is " + ls.size());
@@ -128,7 +128,7 @@ public class smManager extends SQLiteOpenHelper {
         return sm;
     }
 
-    public int SuperMemoWordCount() throws ParseException {
+    public int SuperMemoWordCount(Date endDate) throws ParseException {
         List<SuperMemo> rows = getSuperMemoFlashcards();//Returns 0
         //System.out.println(rows.size());
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
@@ -138,7 +138,7 @@ public class smManager extends SQLiteOpenHelper {
         for (SuperMemo flashcard : rows) {//For each card..
             reviewDate = format.parse(flashcard.getReviewDate());
             Date todaysDate = format.parse(SuperMemo.getCurrentDate());
-            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate) && !endDate.equals(SuperMemo.getCurrentDate()) && format.parse(SuperMemo.getCurrentDate()).before(endDate)) {//If today is the review day//If today is the review day
                 count++;//Increment the count by 1
             }
         }

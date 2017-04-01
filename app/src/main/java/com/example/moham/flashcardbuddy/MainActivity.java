@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import java.text.ParseException;
+import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -80,9 +81,12 @@ public class MainActivity extends AppCompatActivity {
             lsManager.displayLeitnerSystemWords();//Select statement which prints all Leitner System data to the console.
             smManager.displaySuperMemoWords();
             smAIManager.displaySuperMemoWords();
-            db.testReviewDate(1, "LeitnerSystem");
-            db.testReviewDate(1, "SuperMemo");
-            db.testReviewDate(1, "SuperMemoAI");
+            //db.testReviewDate(1, "LeitnerSystem");//For Endless reviews, sets
+            //db.testReviewDate(1, "SuperMemo");
+            //db.testReviewDate(1, "SuperMemoAI");
+            //db.testEndDate(1, "LeitnerSystem");//Sets the End date as today, should decrement word count. Should not open the relevant activity when finished with a different algorithm.
+            //db.testEndDate(1, "SuperMemo");
+            //db.testEndDate(1, "SuperMemoAI");
             checkWordsAvaliable();
         } catch (ParseException e) {
             e.printStackTrace();
@@ -90,13 +94,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void checkWordsAvaliable() throws ParseException {
-        int smWordCount = smWordsAvaliable();
         int lsWordCount = leitnerWordsAvaliable();
+        int smWordCount = smWordsAvaliable();
         int smAIWordCount = smAIWordsAvaliable();
-        int totalWordCount = smWordCount + lsWordCount + smAIWordCount;
-        System.out.println("Total count is + " + totalWordCount);
+      //  int wordsPassedEndDate = db.getFlashcardEndDate();
+        int totalWordCount = lsWordCount + smWordCount + smAIWordCount;
+        //System.out.println("Total count is + " + totalWordCount + " " + wordsPassedEndDate) < 3;
         Button btn = (Button) findViewById(R.id.start_review);
-        if (totalWordCount >= 1 && totalWordCount <= 3) {
+        if (totalWordCount >= 1 && totalWordCount <= 3) {//If the has reached it's end date, disable review button.
             btn.setEnabled(true);
         } else {
             btn.setEnabled(false);
@@ -107,19 +112,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public int smWordsAvaliable() throws ParseException {
-        int count = smManager.SuperMemoWordCount();
+        Date endDate = db.checkEndDate("SuperMemo");
+        int count = smManager.SuperMemoWordCount(endDate);
         System.out.println("Current count is : " + count);
         return count;
     }
 
     public int leitnerWordsAvaliable() throws ParseException {
-        int count = lsManager.leitnerWordCount();
+        Date endDate = db.checkEndDate("LeitnerSystem");
+        int count = lsManager.leitnerWordCount(endDate);
         System.out.println("Current count is : " + count);
         return count;
     }
 
     public int smAIWordsAvaliable() throws ParseException {
-        int count = smAIManager.SuperMemoWordCount();
+        Date endDate = db.checkEndDate("SuperMemoAI");
+        int count = smAIManager.SuperMemoWordCount(endDate);
         System.out.println("Current count is : " + count);
         return count;
     }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class smActivity extends AppCompatActivity {
@@ -33,7 +34,8 @@ public class smActivity extends AppCompatActivity {
 
     public void beginReview() {
         try {
-            smWords = smManager.todaysWordReviewList();
+            Date endDate = dbHandler.checkEndDate("SuperMemo");
+            smWords = smManager.todaysWordReviewList(endDate);
             if (smWords.size() == 0) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -68,6 +70,8 @@ public class smActivity extends AppCompatActivity {
     }
 
     public void submitRating(View view) throws ParseException {
+        Date endDateLS = dbHandler.checkEndDate("LeitnerSystem");
+        Date endDateSMAI = dbHandler.checkEndDate("SuperMemoAI");
         List<Flashcard> rows = dbHandler.getFlashcardResult("SuperMemo");//Get's updated results
         Flashcard fc = rows.get(0);//Stores within flashcard object.
         RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
@@ -81,12 +85,12 @@ public class smActivity extends AppCompatActivity {
         currentWord.setEFactor(newEF);
         smManager.updateSuperMemoWord(currentWord, newInterval);
         dbHandler.updateResults("SuperMemo", Integer.toString(rating), fc.getCurrentInterval() + 1, fc.getSuccessCount(), previousRating);
-        if (lsManager.leitnerWordCount() > 0) { // If we have leitner words to review, open that activity
+        if (lsManager.leitnerWordCount(endDateLS) > 0) { // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, lsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
-        } else if (smAIManager.SuperMemoWordCount() > 0) { // If we have leitner words to review, open that activity
+        } else if (smAIManager.SuperMemoWordCount(endDateSMAI) > 0) { // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, smAIActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);

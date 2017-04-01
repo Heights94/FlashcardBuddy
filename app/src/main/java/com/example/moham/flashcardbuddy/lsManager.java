@@ -112,7 +112,7 @@ public class lsManager extends SQLiteOpenHelper {
         }
     }
 
-    public int leitnerWordCount() throws ParseException {
+    public int leitnerWordCount(Date endDate) throws ParseException {
         List<LeitnerSystem> rows = getLeitnerFlashcards();//Returns 0
         //System.out.println(rows.size());
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
@@ -122,7 +122,9 @@ public class lsManager extends SQLiteOpenHelper {
         for (LeitnerSystem flashcard : rows) {//For each card..
             reviewDate = format.parse(flashcard.getReviewDate());
             Date todaysDate = format.parse(LeitnerSystem.getCurrentDate());
-            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
+            System.out.println("Today is not end date " + !endDate.equals(SuperMemo.getCurrentDate()) + " today isn't past the enddate " + format.parse(SuperMemo.getCurrentDate()).before(endDate));
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate) && !endDate.equals(SuperMemo.getCurrentDate()) && format.parse(SuperMemo.getCurrentDate()).before(endDate)) {//If today is the review day
+                //If today is the review day
                 count++;//Increment the count by 1
             }
         }
@@ -131,7 +133,7 @@ public class lsManager extends SQLiteOpenHelper {
     }
 
 
-    public List<LeitnerSystem> todaysWordReviewList() throws ParseException {
+    public List<LeitnerSystem> todaysWordReviewList(Date endDate) throws ParseException {
         List<LeitnerSystem> rows = getLeitnerFlashcards();//Returns 0
         List<LeitnerSystem> ls = new ArrayList<>();
         //System.out.println(rows.size());
@@ -141,7 +143,8 @@ public class lsManager extends SQLiteOpenHelper {
         for (LeitnerSystem flashcard : rows) {//For each card..
             reviewDate = format.parse(flashcard.getReviewDate());
             Date todaysDate = format.parse(flashcard.getCurrentDate());
-            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
+           // System.out.println("Today is not end date " + !endDate.equals(SuperMemo.getCurrentDate()) + " today isn't past the enddate " + format.parse(SuperMemo.getCurrentDate()).before(endDate));
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate) && !endDate.equals(SuperMemo.getCurrentDate()) && format.parse(SuperMemo.getCurrentDate()).before(endDate)) {//If today is the review day
                 ls.add(flashcard);
             }
             // System.out.println(flashcard.getWord() + " ls is " + ls.size());

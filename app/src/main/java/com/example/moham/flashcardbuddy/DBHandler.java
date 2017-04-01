@@ -154,7 +154,6 @@ public class DBHandler extends SQLiteOpenHelper {
         return FlashcardList;
     }
 
-
     // Adding new Flashcard
     public void addFlashcard(Flashcard Flashcard, String TABLE_NAME) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -187,9 +186,9 @@ public class DBHandler extends SQLiteOpenHelper {
     // Adding new Flashcard
     public void addResults(String TABLE_NAME) throws ParseException {
         Calendar c = Calendar.getInstance();
-        DateFormat date = new SimpleDateFormat("dd-MM-yyy");
+        DateFormat date = new SimpleDateFormat("EEEE dd-MM-yyy");
         date.setTimeZone(TimeZone.getTimeZone("GMT"));
-        c.setTime(date.parse(Flashcard.getCurrentDate()));
+        c.setTime(date.parse(SuperMemo.getCurrentDate()));
         c.add(Calendar.WEEK_OF_MONTH, 2);
         String endDate = date.format(c.getTime());
         SQLiteDatabase db = this.getWritableDatabase();
@@ -360,14 +359,14 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         if (databaseEmpty("SuperMemo")) {
             //addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
-            addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, flashcard.getCurrentDate(), SuperMemo.getCurrentDate(), 2.5f, 0), "SuperMemo");
+            addFlashcard(new SuperMemo(0, "Sore", "That", 0, null, SuperMemo.getCurrentDate(), SuperMemo.getCurrentDate(), 2.5f, 0), "SuperMemo");
             addResults("SuperMemo");
         } else {
             Log.d("Full SuperMemo: ", "Enough data is already stored ..");
         }
         if (databaseEmpty("SuperMemoAI")) {
             //addFlashcard(new SuperMemo(0, "Kore", "This", 0, null, flashcard.getCurrentDate(), flashcard.getCurrentDate(), 2.5f, 0), "SuperMemo");
-            addFlashcard(new SuperMemo(0, "Nani", "What", 0, null, flashcard.getCurrentDate(), SuperMemo.getCurrentDate(), 2.5f, 0), "SuperMemoAI");
+            addFlashcard(new SuperMemo(0, "Nani", "What", 0, null, SuperMemo.getCurrentDate(), SuperMemo.getCurrentDate(), 2.5f, 0), "SuperMemoAI");
             addResults("SuperMemoAI");
         } else {
             Log.d("Full SuperMemo: ", "Enough data is already stored ..");
@@ -415,11 +414,44 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + TABLE_NAME);
     }
 
+    //Gets the end date for an algorithm.
+    public Date checkEndDate(String algorithmName) throws ParseException {
+        Date endDate = null;
+        DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String selectQuery = "SELECT * FROM Results WHERE algorithmName ='" + algorithmName + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                endDate = format.parse(cursor.getString(6));
+            } while (cursor.moveToNext());
+        }
+        //System.out.println("End date for " + algorithmName + " is " + endDate);
+        return endDate;
+    }
+
+    //Sets the review date for an algorithm, allows for endless reviews. Used for testing the results screen.
     public void testReviewDate(int id, String TABLE_NAME) throws ParseException {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_REVIEW_DATE, SuperMemo.getCurrentDate());
         //    System.out.println("Updated row:" + newReviewDate);
+        //    System.out.println("Row ID is :" + ls.getId());
+        db.update(TABLE_NAME, values, "id=" + id, null);
+    }
+
+    //Sets review date as the end date for an algorithm.
+    public void testEndDate(int id, String TABLE_NAME) throws ParseException { Calendar c = Calendar.getInstance();
+        DateFormat date = new SimpleDateFormat("EEEE dd-MM-yyy");
+        date.setTimeZone(TimeZone.getTimeZone("GMT"));
+        c.setTime(date.parse(SuperMemo.getCurrentDate()));
+        c.add(Calendar.WEEK_OF_MONTH, 2);
+        String endDate = date.format(c.getTime());
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_REVIEW_DATE, endDate);
+            System.out.println("Updated row:" + endDate);
         //    System.out.println("Row ID is :" + ls.getId());
         db.update(TABLE_NAME, values, "id=" + id, null);
     }

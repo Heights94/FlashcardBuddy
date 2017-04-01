@@ -110,7 +110,7 @@ public class smAIManager extends SQLiteOpenHelper {
         }
     }
 
-    public List<SuperMemo> todaysWordReviewList() throws ParseException {
+    public List<SuperMemo> todaysWordReviewList(Date endDate) throws ParseException {
         List<SuperMemo> rows = getSuperMemoFlashcards();//Returns 0
         List<SuperMemo> sm = new ArrayList<>();
         //System.out.println(rows.size());
@@ -121,7 +121,7 @@ public class smAIManager extends SQLiteOpenHelper {
             reviewDate = format.parse(flashcard.getReviewDate());
             Date todaysDate = format.parse(flashcard.getCurrentDate());
             System.out.println(reviewDate + " TODAY DATE IS " + todaysDate);
-            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate) && !endDate.equals(SuperMemo.getCurrentDate()) && format.parse(SuperMemo.getCurrentDate()).before(endDate)) {//If today is the review day
                 sm.add(flashcard);
             }
             // System.out.println(flashcard.getWord() + " ls is " + ls.size());
@@ -129,7 +129,7 @@ public class smAIManager extends SQLiteOpenHelper {
         return sm;
     }
 
-    public int SuperMemoWordCount() throws ParseException {
+    public int SuperMemoWordCount(Date endDate) throws ParseException {
         List<SuperMemo> rows = getSuperMemoFlashcards();//Returns 0
         //System.out.println(rows.size());
         DateFormat format = new SimpleDateFormat("EEEE dd-MM-yyy");
@@ -139,7 +139,7 @@ public class smAIManager extends SQLiteOpenHelper {
         for (SuperMemo flashcard : rows) {//For each card..
             reviewDate = format.parse(flashcard.getReviewDate());
             Date todaysDate = format.parse(SuperMemo.getCurrentDate());
-            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate)) {//If today is the review day
+            if (todaysDate.after(reviewDate) || todaysDate.equals(reviewDate) && !endDate.equals(SuperMemo.getCurrentDate()) && format.parse(SuperMemo.getCurrentDate()).before(endDate)) {//If today is the review day{//If today is the review day
                 count++;//Increment the count by 1
             }
         }
@@ -147,7 +147,7 @@ public class smAIManager extends SQLiteOpenHelper {
         return count;
     }
 
-    public void updateSuperMemoWord(SuperMemo sm) throws ParseException {
+    public void updateSuperMemoWord(SuperMemo sm, int newIntervsl) throws ParseException {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         String newReviewDate = "";
@@ -156,11 +156,10 @@ public class smAIManager extends SQLiteOpenHelper {
         Calendar c = Calendar.getInstance();
         c.setTime(format.parse(sm.getReviewDate()));
         int newBoxNumber = 1;
-        int newReviewInterval = sm.getInterval();
 
-        c.add(Calendar.DATE, newReviewInterval);
+        c.add(Calendar.DATE, newIntervsl);
         newReviewDate = format.format(c.getTime());  // dt is now the new date
-        values.put(KEY_INTERVAL, sm.getInterval());//Reviewed word now, increment times reviewed.
+        values.put(KEY_INTERVAL, sm.getInterval() + 1);//Reviewed word now, increment times reviewed.
         values.put(KEY_SPELLING, sm.getSpelling());
         //System.out.println("Efactor here is " + sm.getEFactor());
         values.put(KEY_EFACTOR, sm.getEFactor());

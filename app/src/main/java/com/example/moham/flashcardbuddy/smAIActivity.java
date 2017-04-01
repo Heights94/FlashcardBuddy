@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class smAIActivity extends AppCompatActivity {
@@ -35,7 +36,8 @@ public class smAIActivity extends AppCompatActivity {
 
     public void beginReview() {
         try {
-            smWords = smAIManager.todaysWordReviewList();
+            Date endDate = dbHandler.checkEndDate("SuperMemoAI");
+            smWords = smAIManager.todaysWordReviewList(endDate);
             if (smWords.size() == 0) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -144,25 +146,27 @@ public class smAIActivity extends AppCompatActivity {
     public void continueReview(View view) throws ParseException {
         //RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         //int rating = (int) ratingBar.getRating();//Will always be a whole number.
+        Date endDateLS = dbHandler.checkEndDate("LeitnerSystem");
+        Date endDateSM = dbHandler.checkEndDate("SuperMemo");
         List<Flashcard> rows = dbHandler.getFlashcardResult("SuperMemoAI");//Get's updated results
         Flashcard fc = rows.get(0);//Stores within flashcard object.
         int previousRating = currentWord.getQualityOfResponse();
         int newInterval = currentWord.getNextInterval(currentWord.getInterval() + 1);//Uses previous EF value, EF value decreases the harder to remember. Needs to increment the interval by 1 as a review has been just completed.
-        currentWord.setInterval(newInterval);
+       // currentWord.setInterval(newInterval);
         currentWord.setQualityOfResponse(rating);//Now independent of updateResults, can set because we have the variable previousRating.
         double newEF = currentWord.getNewEFactor();//After each response is made
         System.out.println("Efactor is " + newEF + "Old efactor is " + currentWord.getEFactor());
         String spelling = checkSpelling();
         currentWord.setSpelling(spelling);
         currentWord.setEFactor(newEF);
-        smAIManager.updateSuperMemoWord(currentWord);
+        smAIManager.updateSuperMemoWord(currentWord, newInterval);
         dbHandler.updateResults("SuperMemoAI", Integer.toString(rating), fc.getCurrentInterval() + 1, fc.getSuccessCount(), previousRating);
-        if (lsManager.leitnerWordCount() > 0) { // If we have leitner words to review, open that activity
+        if (lsManager.leitnerWordCount(endDateLS) > 0) { // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, lsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
-        } else if (smManager.SuperMemoWordCount() > 0) { // If we have leitner words to review, open that activity
+        } else if (smManager.SuperMemoWordCount(endDateSM) > 0) { // If we have leitner words to review, open that activity
             Intent intent = new Intent(this, smActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);

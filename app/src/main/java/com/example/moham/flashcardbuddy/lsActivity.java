@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class lsActivity extends AppCompatActivity {
@@ -31,7 +32,11 @@ public class lsActivity extends AppCompatActivity {
 
     public void beginReview() {
         try {
-            rows = db.todaysWordReviewList();
+            //dbHandler.testEndDate(1, "LeitnerSystem");
+            //dbHandler.testEndDate(1, "SuperMemo");
+            //dbHandler.testEndDate(1, "SuperMemoAI");
+            Date endDate = dbHandler.checkEndDate("LeitnerSystem");
+            rows = db.todaysWordReviewList(endDate);
             if (rows.size() == 0) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -77,18 +82,20 @@ public class lsActivity extends AppCompatActivity {
 
     public void okayButton(View view) {
         try {
+            Date endDateSM = dbHandler.checkEndDate("SuperMemo");
+            Date endDateSMAI = dbHandler.checkEndDate("SuperMemoAI");
             hideAnswer();
             LeitnerSystem ls = rows.get(0);
             List<Flashcard> rows = dbHandler.getFlashcardResult("LeitnerSystem");//Get's updated results
             Flashcard fc = rows.get(0);//Stores within flashcard object.
             db.updateLeitnerWord(ls, "okay");
             dbHandler.updateResults("LeitnerSystem", "Okay", fc.getCurrentInterval() + 1, fc.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
-            if (smManager.SuperMemoWordCount() > 0) {
+            if (smManager.SuperMemoWordCount(endDateSM) > 0) {
                 Intent intent = new Intent(this, smActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 finish();
-            } else if (smAIManager.SuperMemoWordCount() > 0) { // If we have leitner words to review, open that activity
+            } else if (smAIManager.SuperMemoWordCount(endDateSMAI) > 0) { // If we have leitner words to review, open that activity
                 Intent intent = new Intent(this, smAIActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
@@ -103,18 +110,20 @@ public class lsActivity extends AppCompatActivity {
 
     public void difficultButton(View view) {
         try {
+            Date endDateSM = dbHandler.checkEndDate("SuperMemo");
+            Date endDateSMAI = dbHandler.checkEndDate("SuperMemoAI");
             hideAnswer();
             LeitnerSystem ls = rows.get(0);
             List<Flashcard> rows = dbHandler.getFlashcardResults();//Get's updated results
             Flashcard fc = rows.get(0);//Stores within flashcard object.
             db.updateLeitnerWord(ls, "difficult");
             dbHandler.updateResults("LeitnerSystem", "Difficult", fc.getCurrentInterval() + 1, fc.getSuccessCount(), 0);//Each review, increment the interval. Since ls is the old data before the update.
-            if (smManager.SuperMemoWordCount() > 0) {
+            if (smManager.SuperMemoWordCount(endDateSM) > 0) {
                 Intent intent = new Intent(this, smActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 finish();
-            } else if (smAIManager.SuperMemoWordCount() > 0) { // If we have leitner words to review, open that activity
+            } else if (smAIManager.SuperMemoWordCount(endDateSMAI) > 0) { // If we have leitner words to review, open that activity
                 Intent intent = new Intent(this, smAIActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
